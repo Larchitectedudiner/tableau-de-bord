@@ -1729,6 +1729,17 @@ input, textarea, select { font-family: 'DM Sans', sans-serif; }
       <button class="btn btn-primary" style="width:100%" onclick="parseImport()">📥 Importer la fiche</button>
       <div id="import-result" style="margin-top:14px"></div>
     </div>
+  </div>
+  <!-- Zone de prévisualisation -->
+  <div id="import-preview" style="display:none;margin-top:20px">
+    <div class="card">
+      <div class="card-title">👤 Prévisualisation — Vérifie et corrige si besoin</div>
+      <div id="import-fields" style="margin-bottom:16px"></div>
+      <button class="btn btn-primary" style="width:100%" onclick="createFromImport()">✅ Créer le profil cliente</button>
+    </div>
+  </div>
+  <div style="display:none">
+    </div>
     <div class="card">
       <div class="card-title" style="margin-bottom:12px">💡 Comment ça marche</div>
       <div style="font-size:13px;color:var(--muted);line-height:1.7">
@@ -4656,7 +4667,8 @@ function parseImport() {
   const preview = document.getElementById('import-preview');
   const fields = document.getElementById('import-fields');
   if (!preview || !fields) {
-    alert('Erreur d\'affichage. Ouvre ce fichier dans ton navigateur (Chrome/Safari).');
+    // Éléments pas encore rendus — on réessaie après un court délai
+    setTimeout(function() { importFiche(); }, 300);
     return;
   }
 
