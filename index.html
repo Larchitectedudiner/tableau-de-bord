@@ -1282,6 +1282,8 @@ input, textarea, select { font-family: 'DM Sans', sans-serif; }
     <div class="nav-item" data-page="planning"><span class="icon">🗓️</span> Planning</div>
     <div class="nav-item" data-page="ebooks"><span class="icon">📖</span> Ebooks IA</div>
     <div class="nav-item" data-page="feuilleroute"><span class="icon">🗺️</span> Feuilles de Route</div>
+    <div class="nav-item" data-page="capcut"><span class="icon">🎬</span> Assistant CapCut</div>
+    <div class="nav-item" data-page="conversion"><span class="icon">🚀</span> Plan Conversion</div>
     <div class="nav-item" data-page="parametres" data-role="direction"><span class="icon">⚙️</span> Paramètres</div>
   </div>
 
@@ -2011,6 +2013,315 @@ input, textarea, select { font-family: 'DM Sans', sans-serif; }
 </div>
 
 <!-- ── PARAMÈTRES ── -->
+<!-- ── ASSISTANT CAPCUT ── -->
+<div class="page" id="page-capcut">
+  <div class="page-header">
+    <h1>🎬 Assistant CapCut</h1>
+    <p>Guides étape par étape pour créer tes vidéos professionnellement</p>
+  </div>
+  <div class="grid-2" style="align-items:start">
+    <!-- Colonne gauche : choix du type de vidéo -->
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="card">
+        <div class="card-title">📱 Quel type de vidéo tu veux créer ?</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">
+          <div class="capcut-type-btn" onclick="selectVideoType('avant_apres')" id="type-avant_apres" style="padding:14px;background:var(--cream-dark);border-radius:10px;cursor:pointer;border:2px solid transparent;transition:all 0.2s">
+            <div style="font-weight:600;font-size:14px">⚖️ Vidéo Avant/Après</div>
+            <div style="font-size:12px;color:var(--muted)">Transformation du mari — photos comparatives</div>
+          </div>
+          <div class="capcut-type-btn" onclick="selectVideoType('recette')" id="type-recette" style="padding:14px;background:var(--cream-dark);border-radius:10px;cursor:pointer;border:2px solid transparent;transition:all 0.2s">
+            <div style="font-weight:600;font-size:14px">🍽️ Vidéo Recette</div>
+            <div style="font-size:12px;color:var(--muted)">Montrer la préparation d'un dîner intelligent</div>
+          </div>
+          <div class="capcut-type-btn" onclick="selectVideoType('temoignage')" id="type-temoignage" style="padding:14px;background:var(--cream-dark);border-radius:10px;cursor:pointer;border:2px solid transparent;transition:all 0.2s">
+            <div style="font-weight:600;font-size:14px">💬 Vidéo Témoignage Cliente</div>
+            <div style="font-size:12px;color:var(--muted)">Partager les résultats d'une cliente</div>
+          </div>
+          <div class="capcut-type-btn" onclick="selectVideoType('conseil')" id="type-conseil" style="padding:14px;background:var(--cream-dark);border-radius:10px;cursor:pointer;border:2px solid transparent;transition:all 0.2s">
+            <div style="font-weight:600;font-size:14px">🎤 Vidéo Conseil</div>
+            <div style="font-size:12px;color:var(--muted)">Partager un conseil ou une astuce de la méthode</div>
+          </div>
+        </div>
+        <div class="form-group" id="capcut-details-zone" style="display:none">
+          <label class="form-label" id="capcut-details-label">Détails supplémentaires</label>
+          <textarea class="form-textarea" id="capcut-details-input" style="min-height:80px" placeholder="Ex: J'ai 3 photos, la musique que je veux utiliser..."></textarea>
+        </div>
+        <div id="capcut-plateforme-zone" style="display:none;margin-top:12px">
+          <label class="form-label">Pour quelle plateforme ?</label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-outline btn-sm" id="plat-facebook" onclick="selectPlateforme('Facebook')">📘 Facebook</button>
+            <button class="btn btn-outline btn-sm" id="plat-instagram" onclick="selectPlateforme('Instagram')">📸 Instagram</button>
+            <button class="btn btn-outline btn-sm" id="plat-tiktok" onclick="selectPlateforme('TikTok')">🎵 TikTok</button>
+            <button class="btn btn-outline btn-sm" id="plat-whatsapp" onclick="selectPlateforme('WhatsApp')">💬 WhatsApp</button>
+          </div>
+        </div>
+        <button class="btn btn-primary" style="width:100%;margin-top:16px" id="btn-generer-guide" onclick="genererGuideCapCut()" style="display:none">🤖 Générer mon guide étape par étape</button>
+      </div>
+      <!-- Specs techniques par plateforme -->
+      <div class="card">
+        <div class="card-title">📐 Dimensions & Durées par Plateforme</div>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:13px">
+          <div style="padding:10px;background:var(--cream-dark);border-radius:8px">
+            <div style="font-weight:600;color:#1877F2">📘 Facebook</div>
+            <div style="color:var(--muted)">Format : 1080x1080 (carré) ou 1080x1350 (portrait)</div>
+            <div style="color:var(--muted)">Durée Reels : max 90 secondes</div>
+            <div style="color:var(--muted)">Durée Story : 15 secondes</div>
+          </div>
+          <div style="padding:10px;background:var(--cream-dark);border-radius:8px">
+            <div style="font-weight:600;color:#E1306C">📸 Instagram</div>
+            <div style="color:var(--muted)">Format : 1080x1920 (Reels/Story) ou 1080x1080 (post)</div>
+            <div style="color:var(--muted)">Durée Reels : 15 à 90 secondes idéal</div>
+            <div style="color:var(--muted)">Durée Story : 15 secondes</div>
+          </div>
+          <div style="padding:10px;background:var(--cream-dark);border-radius:8px">
+            <div style="font-weight:600;color:#000">🎵 TikTok</div>
+            <div style="color:var(--muted)">Format : 1080x1920 (vertical obligatoire)</div>
+            <div style="color:var(--muted)">Durée idéale : 15 à 60 secondes</div>
+            <div style="color:var(--muted)">Max : 10 minutes</div>
+          </div>
+          <div style="padding:10px;background:var(--cream-dark);border-radius:8px">
+            <div style="font-weight:600;color:#25D366">💬 WhatsApp Status</div>
+            <div style="color:var(--muted)">Format : 9:16 vertical recommandé</div>
+            <div style="color:var(--muted)">Durée max : 30 secondes</div>
+            <div style="color:var(--muted)">Taille max fichier : 16 MB</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Colonne droite : guide généré -->
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div class="card-title">📋 Ton Guide Personnalisé</div>
+          <button class="btn btn-outline btn-sm" onclick="copierGuideCapCut()">📋 Copier</button>
+        </div>
+        <div id="capcut-guide-result" style="font-size:13px;line-height:2;color:var(--muted);text-align:center;padding:40px 20px">
+          <div style="font-size:32px;margin-bottom:12px">🎬</div>
+          <div>Choisis un type de vidéo à gauche</div>
+          <div style="font-size:12px;margin-top:8px">Ton guide étape par étape apparaîtra ici</div>
+        </div>
+      </div>
+      <!-- Rappels permanents CapCut -->
+      <div class="card">
+        <div class="card-title">⚠️ Règles Permanentes</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:13px">
+          <div style="display:flex;gap:8px;align-items:flex-start;padding:8px;background:#FFF3CD;border-radius:8px">
+            <span>🚫</span>
+            <span>Ne jamais montrer le visage du mari — floute-le si nécessaire</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start;padding:8px;background:#FFF3CD;border-radius:8px">
+            <span>✅</span>
+            <span>Toujours exporter en 1080p minimum</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start;padding:8px;background:#FFF3CD;border-radius:8px">
+            <span>✅</span>
+            <span>Ajouter sous-titres si tu parles dans la vidéo</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start;padding:8px;background:#FFF3CD;border-radius:8px">
+            <span>✅</span>
+            <span>Vérifier la durée selon la plateforme avant d'exporter</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start;padding:8px;background:#FFF3CD;border-radius:8px">
+            <span>🎨</span>
+            <span>Couleurs de marque : Vert #2D5016 · Terracotta #C4622D · Beige #F5ECD7</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PLAN DE CONVERSION ── -->
+<div class="page" id="page-conversion">
+  <div class="page-header">
+    <h1>🚀 Plan de Conversion 30 Jours</h1>
+    <p>Ton système étape par étape pour convertir des abonnées en clientes payantes</p>
+  </div>
+
+  <!-- Semaine active + progression globale -->
+  <div class="card" style="margin-bottom:20px">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+      <div>
+        <div class="card-title" id="conv-semaine-titre">Semaine 1 — Construire l'audience</div>
+        <div style="font-size:13px;color:var(--muted)" id="conv-semaine-desc">Créer ta présence sur toutes les plateformes</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:24px;font-weight:700;color:var(--clay)" id="conv-jour-actuel">Jour 1</div>
+        <div style="font-size:12px;color:var(--muted)">sur 30 jours</div>
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:4px">
+        <span>Progression globale</span>
+        <span id="conv-pct-global">0%</span>
+      </div>
+      <div style="background:var(--sand);border-radius:20px;height:8px;overflow:hidden">
+        <div id="conv-bar-global" style="height:100%;background:var(--clay);border-radius:20px;transition:width 0.4s;width:0%"></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+      <button class="btn btn-outline btn-sm" onclick="selectSemaineConv(1)" id="conv-s1">S1</button>
+      <button class="btn btn-outline btn-sm" onclick="selectSemaineConv(2)" id="conv-s2">S2</button>
+      <button class="btn btn-outline btn-sm" onclick="selectSemaineConv(3)" id="conv-s3">S3</button>
+      <button class="btn btn-outline btn-sm" onclick="selectSemaineConv(4)" id="conv-s4">S4</button>
+    </div>
+  </div>
+
+  <div class="grid-2" style="align-items:start">
+    <!-- Colonne gauche : actions du jour -->
+    <div style="display:flex;flex-direction:column;gap:16px">
+
+      <!-- Actions aujourd'hui -->
+      <div class="card">
+        <div class="card-title">⚡ Tes Actions Aujourd'hui</div>
+        <div id="conv-actions-jour" style="display:flex;flex-direction:column;gap:10px"></div>
+      </div>
+
+      <!-- Textes prêts à copier -->
+      <div class="card" id="conv-texte-card" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div class="card-title">✍️ Texte Prêt à Copier</div>
+          <button class="btn btn-outline btn-sm" onclick="copierTexteConv()">📋 Copier</button>
+        </div>
+        <div id="conv-texte-zone" style="font-size:13px;line-height:1.8;background:var(--cream-dark);padding:14px;border-radius:10px;white-space:pre-wrap"></div>
+        <button class="btn btn-primary btn-sm" style="margin-top:10px;width:100%" onclick="genererTexteIA()">🤖 Variante IA</button>
+      </div>
+
+      <!-- Générateur de message IA -->
+      <div class="card">
+        <div class="card-title">🤖 Générer un Message de Conversion</div>
+        <div class="form-group">
+          <label class="form-label">Type de message</label>
+          <select class="form-select" id="conv-msg-type">
+            <option value="statut_whatsapp">Statut WhatsApp accrocheur</option>
+            <option value="post_facebook">Post Facebook avec appel à l'action</option>
+            <option value="mp_prospect">Message privé à une prospect</option>
+            <option value="relance_silencieuse">Relance prospect silencieuse</option>
+            <option value="offre_payante">Présentation offre payante</option>
+            <option value="temoignage">Post témoignage cliente</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contexte (optionnel)</label>
+          <textarea class="form-textarea" id="conv-msg-contexte" style="min-height:60px" placeholder="Ex: Mimik vient de dire qu'elle dort mieux après 12 jours..."></textarea>
+        </div>
+        <button class="btn btn-primary" style="width:100%" id="btn-gen-conv-msg" onclick="genererMessageConversion()">🤖 Générer le message</button>
+        <div id="conv-msg-result" style="margin-top:12px;display:none">
+          <div style="font-size:13px;line-height:1.8;background:var(--cream-dark);padding:14px;border-radius:10px;white-space:pre-wrap" id="conv-msg-result-text"></div>
+          <button class="btn btn-outline btn-sm" style="margin-top:8px" onclick="copierMsgConv()">📋 Copier</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Colonne droite : suivi et pipeline -->
+    <div style="display:flex;flex-direction:column;gap:16px">
+
+      <!-- Pipeline de conversion -->
+      <div class="card">
+        <div class="card-title">📊 Pipeline de Conversion</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--cream-dark);border-radius:8px">
+            <div style="display:flex;align-items:center;gap:8px"><span style="font-size:18px">👀</span><span style="font-size:13px;font-weight:600">Exposées</span></div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <input type="number" class="form-input" style="width:70px;padding:4px 8px;font-size:13px" id="pipe-exposees" value="0" onchange="updatePipeline()">
+              <span style="font-size:12px;color:var(--muted)">personnes</span>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--cream-dark);border-radius:8px">
+            <div style="display:flex;align-items:center;gap:8px"><span style="font-size:18px">💬</span><span style="font-size:13px;font-weight:600">Intéressées</span></div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <input type="number" class="form-input" style="width:70px;padding:4px 8px;font-size:13px" id="pipe-interessees" value="0" onchange="updatePipeline()">
+              <span style="font-size:12px;color:var(--muted)">personnes</span>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--cream-dark);border-radius:8px">
+            <div style="display:flex;align-items:center;gap:8px"><span style="font-size:18px">🧪</span><span style="font-size:13px;font-weight:600">En test gratuit</span></div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <input type="number" class="form-input" style="width:70px;padding:4px 8px;font-size:13px" id="pipe-test" value="2" onchange="updatePipeline()">
+              <span style="font-size:12px;color:var(--muted)">personnes</span>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:rgba(45,80,22,0.1);border-radius:8px;border:1px solid var(--forest)">
+            <div style="display:flex;align-items:center;gap:8px"><span style="font-size:18px">💰</span><span style="font-size:13px;font-weight:600">Clientes payantes</span></div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <input type="number" class="form-input" style="width:70px;padding:4px 8px;font-size:13px" id="pipe-payantes" value="0" onchange="updatePipeline()">
+              <span style="font-size:12px;color:var(--muted)">personnes</span>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:12px;padding:10px;background:var(--cream-dark);border-radius:8px;font-size:12px;color:var(--muted)">
+          Taux de conversion : <strong id="conv-taux" style="color:var(--clay)">0%</strong> — Objectif : <strong style="color:var(--forest)">5-8 clientes</strong> en 30 jours
+        </div>
+      </div>
+
+      <!-- Règle d'action post-publication -->
+      <div class="card">
+        <div class="card-title">📋 Quoi Faire Après Chaque Publication</div>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:13px">
+          <div style="padding:12px;background:var(--cream-dark);border-radius:8px">
+            <div style="font-weight:600;margin-bottom:6px;color:var(--forest)">📱 Après un Statut WhatsApp</div>
+            <div style="color:var(--muted);line-height:1.8">
+              ✅ Attends 2h<br>
+              ✅ Regarde qui a vu<br>
+              ✅ Envoie un MP aux vues correspondant à ta cible<br>
+              ✅ Message : <em>"Tu as vu mon statut — ça t'a parlé ?"</em>
+            </div>
+          </div>
+          <div style="padding:12px;background:var(--cream-dark);border-radius:8px">
+            <div style="font-weight:600;margin-bottom:6px;color:var(--forest)">📘 Après un Post Facebook</div>
+            <div style="color:var(--muted);line-height:1.8">
+              ✅ Dans les 30 min : réponds à chaque commentaire<br>
+              ✅ Toute personne qui commente → MP dans les 2h<br>
+              ✅ Message : <em>"Je t'ai vue sur mon post — tu veux qu'on en parle ?"</em><br>
+              ✅ Partage le post sur ton profil personnel
+            </div>
+          </div>
+          <div style="padding:12px;background:var(--cream-dark);border-radius:8px">
+            <div style="font-weight:600;margin-bottom:6px;color:var(--forest)">💬 Après un MP sans réponse</div>
+            <div style="color:var(--muted);line-height:1.8">
+              ✅ J+1 : relance douce — 1 seule phrase<br>
+              ✅ J+3 : dernier message — crée l'urgence<br>
+              ✅ J+4 : classe en froide — passe à la suivante
+            </div>
+          </div>
+          <div style="padding:12px;background:rgba(45,80,22,0.08);border-radius:8px;border:1px solid var(--forest)">
+            <div style="font-weight:600;margin-bottom:6px;color:var(--forest)">🔄 Cycle de conversion Mimik & Annie Rose</div>
+            <div style="color:var(--muted);line-height:1.8">
+              📅 Jour 21 : <em>"Comment tu te sens par rapport au début ?"</em><br>
+              📅 Jour 24 : présente la version payante naturellement<br>
+              📅 Jour 27 : offre spéciale continuité<br>
+              📅 Jour 28 : décision finale
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Objectif semaine -->
+      <div class="card">
+        <div class="card-title">🎯 Objectifs Semaine par Semaine</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:13px">
+          <div style="padding:10px 12px;background:var(--cream-dark);border-radius:8px;border-left:3px solid var(--clay)">
+            <div style="font-weight:600">Semaine 1</div>
+            <div style="color:var(--muted)">Créer Instagram · 1 post/jour Facebook · 3 statuts WhatsApp · 200 personnes exposées</div>
+          </div>
+          <div style="padding:10px 12px;background:var(--cream-dark);border-radius:8px;border-left:3px solid var(--clay)">
+            <div style="font-weight:600">Semaine 2</div>
+            <div style="color:var(--muted)">Contacter 20 prospects en MP · Recruter 3 nouveaux cas tests · Maintenir Mimik et Annie Rose</div>
+          </div>
+          <div style="padding:10px 12px;background:var(--cream-dark);border-radius:8px;border-left:3px solid var(--forest)">
+            <div style="font-weight:600">Semaine 3</div>
+            <div style="color:var(--muted)">Lancer offre payante 5 places · Convertir Mimik et Annie Rose · Publier premiers témoignages</div>
+          </div>
+          <div style="padding:10px 12px;background:var(--cream-dark);border-radius:8px;border-left:3px solid var(--forest)">
+            <div style="font-weight:600">Semaine 4</div>
+            <div style="color:var(--muted)">Relancer avec preuve sociale · Objectif final : 5 à 8 clientes payantes</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="page" id="page-parametres">
   <div class="page-header">
     <h1>Paramètres</h1>
@@ -6327,10 +6638,253 @@ async function genererPlanningLancement() {
   el.textContent = result || 'Erreur de génération.';
 }
 
+// ══════════════════════════════════════════
+// ASSISTANT CAPCUT
+// ══════════════════════════════════════════
+let capcutVideoType = null;
+let capcutPlateforme = 'Facebook';
+
+function selectVideoType(type) {
+  capcutVideoType = type;
+  document.querySelectorAll('.capcut-type-btn').forEach(function(el) {
+    el.style.borderColor = 'transparent';
+    el.style.background = 'var(--cream-dark)';
+  });
+  var el = document.getElementById('type-' + type);
+  if (el) { el.style.borderColor = 'var(--clay)'; el.style.background = 'rgba(196,98,45,0.08)'; }
+  document.getElementById('capcut-details-zone').style.display = '';
+  document.getElementById('capcut-plateforme-zone').style.display = '';
+  document.getElementById('btn-generer-guide').style.display = '';
+  var labels = {
+    avant_apres: 'Décris tes photos (ex: j\'ai 2 photos du mari, une à 97kg et une à 72kg)',
+    recette: 'Quel dîner tu veux filmer ? (ex: poulet curry avec légumes)',
+    temoignage: 'Décris le témoignage (ex: capture WhatsApp de Mimik, résultats après 11 jours)',
+    conseil: 'Quel conseil tu veux partager ? (ex: pourquoi supprimer le riz le soir)'
+  };
+  document.getElementById('capcut-details-label').textContent = labels[type] || 'Détails';
+}
+
+function selectPlateforme(p) {
+  capcutPlateforme = p;
+  ['Facebook','Instagram','TikTok','WhatsApp'].forEach(function(pl) {
+    var btn = document.getElementById('plat-' + pl);
+    if (btn) { btn.className = 'btn btn-outline btn-sm'; }
+  });
+  var actif = document.getElementById('plat-' + p);
+  if (actif) { actif.className = 'btn btn-primary btn-sm'; }
+}
+
+async function genererGuideCapCut() {
+  if (!capcutVideoType) { alert('Choisis un type de vidéo.'); return; }
+  var details = document.getElementById('capcut-details-input').value.trim();
+  var el = document.getElementById('capcut-guide-result');
+  var btn = document.getElementById('btn-generer-guide');
+  btn.disabled = true;
+  btn.textContent = '⏳ Génération en cours...';
+  el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted)">⏳ Création de ton guide personnalisé...</div>';
+  var types = {
+    avant_apres: 'vidéo avant/après montrant la transformation physique',
+    recette: 'vidéo recette montrant la préparation d\'un diner intelligent',
+    temoignage: 'vidéo témoignage d\'une cliente avec ses résultats',
+    conseil: 'vidéo conseil partageant une astuce de la méthode Les Diners Intelligents'
+  };
+  var specs = {
+    Facebook: 'Format 1080x1080px carré ou 1080x1350px portrait. Durée idéale 30-60 secondes.',
+    Instagram: 'Format 1080x1920px vertical pour Reels. Durée idéale 15-30 secondes.',
+    TikTok: 'Format 1080x1920px vertical obligatoire. Durée idéale 15-30 secondes.',
+    WhatsApp: 'Format vertical 9:16. Durée maximum 30 secondes. Taille max 16MB.'
+  };
+  var prompt = 'Tu es un expert CapCut sur Samsung Android. Lucrece veut créer une ' + types[capcutVideoType] + ' pour ' + capcutPlateforme + '. Specs techniques : ' + specs[capcutPlateforme] + '. Details fournis : ' + (details || 'aucun detail supplementaire') + '. Contexte de marque : L\'Architecte du Diner, couleurs Vert #2D5016 Terracotta #C4622D Beige #F5ECD7, polices Playfair Display et Lato. Regle absolue : ne jamais montrer le visage du mari. Génère un guide étape par étape ULTRA-DÉTAILLÉ pour CapCut sur Samsung A16. Pour chaque étape explique EXACTEMENT ou appuyer, quel bouton chercher, comment le trouver. Utilise des numéros d\'étape clairs. Commence par la préparation avant d\'ouvrir CapCut, puis les étapes dans CapCut, puis l\'export.';
+  var sys = 'Tu es un expert CapCut qui guide des utilisateurs débutants sur Android. Tes instructions sont ultra-précises : tu dis exactement où appuyer, comment trouver chaque bouton, quoi faire si quelque chose ne s\'affiche pas. Tu n\'assumes jamais que l\'utilisateur sait déjà quelque chose. Chaque geste est expliqué.';
+  var result = await callAI(prompt, sys, 3000);
+  btn.disabled = false;
+  btn.textContent = '🤖 Générer mon guide étape par étape';
+  if (result) {
+    el.style.color = 'var(--text)';
+    el.style.textAlign = 'left';
+    el.style.padding = '0';
+    el.innerHTML = '<div style="white-space:pre-wrap;font-size:13px;line-height:1.9">' + result + '</div>';
+    showToast('Guide généré !');
+  } else {
+    el.innerHTML = '<div class="alert alert-rouge">Erreur — Vérifie ta clé API dans Paramètres</div>';
+  }
+}
+
+function copierGuideCapCut() {
+  var el = document.getElementById('capcut-guide-result');
+  var text = el.innerText;
+  if (!text || text.includes('Choisis un type')) { alert('Génère d\'abord un guide.'); return; }
+  navigator.clipboard.writeText(text).then(function() { showToast('Guide copié !'); });
+}
+
+// ══════════════════════════════════════════
+// PLAN DE CONVERSION
+// ══════════════════════════════════════════
+if (!DATA.conversion) DATA.conversion = { semaine: 1, actionsCompletes: [], pipeline: { exposees: 0, interessees: 0, test: 2, payantes: 0 } };
+
+const CONV_SEMAINES = {
+  1: {
+    titre: "Semaine 1 — Construire l'audience",
+    desc: "Créer ta présence sur toutes les plateformes",
+    actions: [
+      { id: 's1a1', texte: "Créer le compte Instagram @larchitectedudiner", plateforme: 'Instagram', urgent: true, textePret: null },
+      { id: 's1a2', texte: "Publier 1 post Facebook avec photo de dîner + appel à l'action", plateforme: 'Facebook', urgent: true, textePret: "Ce soir chez moi, on a mangé intelligent. 🍽️\n\nMon mari a perdu 25 kg en mangeant comme ça. Chaque soir.\n\nJe cherche 5 femmes sérieuses pour tester ma méthode gratuitement 28 jours.\n\nEnvoie-moi DINER en message privé.\n\nLucrèce | L'Architecte du Dîner 🍽️\n\n#LArchitecteDuDiner #DinersIntelligents" },
+      { id: 's1a3', texte: "Publier 1 statut WhatsApp avec photo de dîner", plateforme: 'WhatsApp', urgent: false, textePret: "Ce soir chez moi, on mange intelligent. Mon dîner travaille pendant qu'on dort. 🍽️ C'est ça les Dîners Intelligents." },
+      { id: 's1a4', texte: "Contacter 5 personnes ciblées en message privé", plateforme: 'WhatsApp', urgent: false, textePret: "[Prénom], je pense à toi. Je lance un programme où on rééduque le palais de toute la famille juste en changeant le dîner. Mon mari a perdu 25 kg comme ça. Je cherche 5 femmes motivées pour tester gratuitement 28 jours. Tu veux qu'on en parle ?" },
+      { id: 's1a5', texte: "Envoyer carte de suivi matin à Mimik et Annie Rose", plateforme: 'WhatsApp', urgent: true, textePret: null }
+    ]
+  },
+  2: {
+    titre: "Semaine 2 — Activer les prospects",
+    desc: "Contacter personnellement et recruter",
+    actions: [
+      { id: 's2a1', texte: "Contacter 20 prospects en message privé ciblé", plateforme: 'WhatsApp', urgent: true, textePret: "[Prénom], je pense à toi. Mon programme rééduque le palais de toute la famille juste en changeant le dîner. Mon mari a perdu 25 kg comme ça. Tu veux qu'on en parle ?" },
+      { id: 's2a2', texte: "Publier témoignage intermédiaire de Mimik ou Annie Rose", plateforme: 'Facebook', urgent: false, textePret: "12 jours. C'est tout ce qu'il a fallu.\n\nMimik me dit : Je me réveille en forme le matin. Mon ventre est déjà moins gonflé.\n\nElle n'a rien changé sauf le dîner. 🍽️\n\nLucrèce | L'Architecte du Dîner\n#LArchitecteDuDiner" },
+      { id: 's2a3', texte: "Recruter 3 nouveaux cas tests gratuits", plateforme: 'WhatsApp', urgent: false, textePret: null },
+      { id: 's2a4', texte: "Publier 1 post conseil de la méthode", plateforme: 'Facebook', urgent: false, textePret: "Pourquoi j'ai supprimé le riz du dîner. 🍽️\n\nPas parce que c'est interdit. Mais parce que ton corps n'en a pas besoin la nuit.\n\nProtéines + légumes = les bons matériaux pour ton corps.\n\nC'est ça la rééducation du palais.\n\nLucrèce | L'Architecte du Dîner 🍽️" },
+      { id: 's2a5', texte: "Créer et publier le premier Reel Instagram", plateforme: 'Instagram', urgent: false, textePret: null }
+    ]
+  },
+  3: {
+    titre: "Semaine 3 — Lancer l'offre payante",
+    desc: "Convertir et encaisser",
+    actions: [
+      { id: 's3a1', texte: "Présenter l'offre payante à Mimik (Jour 21)", plateforme: 'WhatsApp', urgent: true, textePret: "Mimik, ça fait 3 semaines qu'on avance ensemble. 🌿\n\nTu as déjà vu des changements — le ventre plus léger, le sommeil meilleur.\n\nMon programme complet payant démarre bientôt. Tu as une place réservée en priorité.\n\nTu veux qu'on en parle ?" },
+      { id: 's3a2', texte: "Présenter l'offre payante à Annie Rose (Jour 21)", plateforme: 'WhatsApp', urgent: true, textePret: "Annie Rose, 3 semaines déjà. 🌿\n\nTu dors mieux, ton ventre est plus léger le matin.\n\nMon programme complet démarre bientôt. Tu as une priorité parce que tu fais partie de mes premières.\n\nTu veux continuer l'aventure ?" },
+      { id: 's3a3', texte: "Lancer offre publique 5 places limitées sur Facebook", plateforme: 'Facebook', urgent: false, textePret: "⚠️ 5 PLACES SEULEMENT\n\nJe lance mon Challenge 28 Jours — Rééducation du Palais.\n\nMes premières clientes voient déjà des résultats après 3 semaines.\n\nEnvoie-moi JE VEUX en message privé.\n\nLucrèce | L'Architecte du Dîner 🍽️" },
+      { id: 's3a4', texte: "Publier vidéo avant/après du mari", plateforme: 'Facebook', urgent: false, textePret: null },
+      { id: 's3a5', texte: "Relancer les 20 prospects contactés semaine 2", plateforme: 'WhatsApp', urgent: false, textePret: "[Prénom], je reviens vers toi. Il reste 2 places dans mon programme. Les premières ont déjà des résultats visibles. Tu veux rejoindre ?" }
+    ]
+  },
+  4: {
+    titre: "Semaine 4 — Scaler avec la preuve sociale",
+    desc: "Témoignages + nouvelles inscriptions",
+    actions: [
+      { id: 's4a1', texte: "Publier témoignage final de Mimik (Jour 28)", plateforme: 'Facebook', urgent: true, textePret: "28 jours. Voici ce que Mimik me dit :\n\nJe me sens légère, plus du tout lourde. Je me réveille en forme. Mon ventre est moins gonflé.\n\nElle n'a rien changé sauf le dîner. 🍽️\n\nMon prochain groupe démarre bientôt. Envoie-moi DINER pour réserver ta place.\n\nLucrèce | L'Architecte du Dîner" },
+      { id: 's4a2', texte: "Publier témoignage final d'Annie Rose (Jour 28)", plateforme: 'Facebook', urgent: true, textePret: null },
+      { id: 's4a3', texte: "Relance finale avec urgence — dernières places", plateforme: 'WhatsApp', urgent: false, textePret: "[Prénom], je ferme les inscriptions ce soir. Il reste 2 places. C'est le moment. Tu veux qu'on commence ?" },
+      { id: 's4a4', texte: "Bilan des 30 jours — compter les clientes converties", plateforme: null, urgent: false, textePret: null },
+      { id: 's4a5', texte: "Planifier le groupe 2 avec les leçons apprises", plateforme: null, urgent: false, textePret: null }
+    ]
+  }
+};
+
+function initConversion() {
+  selectSemaineConv(DATA.conversion.semaine || 1);
+  if (DATA.conversion.pipeline) {
+    document.getElementById('pipe-exposees').value = DATA.conversion.pipeline.exposees || 0;
+    document.getElementById('pipe-interessees').value = DATA.conversion.pipeline.interessees || 0;
+    document.getElementById('pipe-test').value = DATA.conversion.pipeline.test || 2;
+    document.getElementById('pipe-payantes').value = DATA.conversion.pipeline.payantes || 0;
+  }
+  updatePipeline();
+}
+
+function selectSemaineConv(s) {
+  DATA.conversion.semaine = s;
+  saveData();
+  [1,2,3,4].forEach(function(n) {
+    var btn = document.getElementById('conv-s'+n);
+    if (btn) btn.className = n === s ? 'btn btn-primary btn-sm' : 'btn btn-outline btn-sm';
+  });
+  var sem = CONV_SEMAINES[s];
+  document.getElementById('conv-semaine-titre').textContent = sem.titre;
+  document.getElementById('conv-semaine-desc').textContent = sem.desc;
+  document.getElementById('conv-jour-actuel').textContent = 'Semaine ' + s;
+  renderActionsJour(s);
+  updateProgressGlobal();
+}
+
+function renderActionsJour(s) {
+  var el = document.getElementById('conv-actions-jour');
+  var sem = CONV_SEMAINES[s];
+  if (!DATA.conversion.actionsCompletes) DATA.conversion.actionsCompletes = [];
+  el.innerHTML = sem.actions.map(function(a) {
+    var fait = DATA.conversion.actionsCompletes.indexOf(a.id) > -1;
+    var plateforme = a.plateforme ? '<span style="font-size:10px;padding:2px 8px;border-radius:10px;background:var(--sand);color:var(--muted)">'+a.plateforme+'</span>' : '';
+    var urgent = a.urgent ? '<span style="font-size:10px;padding:2px 8px;border-radius:10px;background:rgba(196,98,45,0.15);color:var(--clay)">Priorité</span>' : '';
+    var textBtn = a.textePret ? '<button class="btn btn-outline btn-sm" style="font-size:11px;padding:4px 8px;white-space:nowrap" onclick="afficherTexte('+JSON.stringify(a.textePret)+')">✍️ Texte</button>' : '';
+    var cbOnchange = 'toggleActionConv(this,\'' + a.id + '\',' + s + ')';
+    return '<div style="display:flex;align-items:flex-start;gap:10px;padding:12px;background:'+(fait?'rgba(45,80,22,0.06)':'var(--cream-dark)')+';border-radius:10px;border-left:3px solid '+(fait?'var(--forest)':'var(--border)')+'">'
+      + '<input type="checkbox" style="margin-top:3px;width:18px;height:18px;cursor:pointer;accent-color:var(--forest)" '+(fait?'checked':'')+' onchange="' + cbOnchange + '">'
+      + '<div style="flex:1"><div style="font-size:13px;font-weight:600;color:'+(fait?'var(--muted)':'var(--text)')+';text-decoration:'+(fait?'line-through':'none')+'">'+a.texte+'</div>'
+      + '<div style="display:flex;gap:6px;margin-top:5px;flex-wrap:wrap">'+plateforme+urgent+'</div></div>'
+      + textBtn + '</div>';
+  }).join('');
+}
+
+function toggleActionConv(id, fait, semaine, textePret) {
+  if (!DATA.conversion.actionsCompletes) DATA.conversion.actionsCompletes = [];
+  if (fait) {
+    if (DATA.conversion.actionsCompletes.indexOf(id) === -1) DATA.conversion.actionsCompletes.push(id);
+    if (textePret && textePret !== 'null') afficherTexte(textePret);
+  } else {
+    DATA.conversion.actionsCompletes = DATA.conversion.actionsCompletes.filter(function(x){return x!==id;});
+  }
+  saveData();
+  renderActionsJour(semaine);
+  updateProgressGlobal();
+  showToast(fait ? 'Action complétée !' : 'Action décochée');
+}
+
+function afficherTexte(texte) {
+  var card = document.getElementById('conv-texte-card');
+  card.style.display = '';
+  document.getElementById('conv-texte-zone').textContent = texte;
+  card.scrollIntoView({ behavior: 'smooth' });
+}
+
+function copierTexteConv() {
+  var text = document.getElementById('conv-texte-zone').textContent;
+  navigator.clipboard.writeText(text).then(function(){ showToast('Texte copié !'); });
+}
+
+function copierMsgConv() {
+  var text = document.getElementById('conv-msg-result-text').textContent;
+  navigator.clipboard.writeText(text).then(function(){ showToast('Message copié !'); });
+}
+
+function updateProgressGlobal() {
+  var total = 0; var fait = 0;
+  [1,2,3,4].forEach(function(s) {
+    total += CONV_SEMAINES[s].actions.length;
+    CONV_SEMAINES[s].actions.forEach(function(a) {
+      if (DATA.conversion.actionsCompletes && DATA.conversion.actionsCompletes.indexOf(a.id) > -1) fait++;
+    });
+  });
+  var pct = total > 0 ? Math.round(fait/total*100) : 0;
+  document.getElementById('conv-pct-global').textContent = pct + '%';
+  document.getElementById('conv-bar-global').style.width = pct + '%';
+}
+
+function updatePipeline() {
+  var exp = parseInt(document.getElementById('pipe-exposees').value) || 0;
+  var pay = parseInt(document.getElementById('pipe-payantes').value) || 0;
+  var taux = exp > 0 ? Math.round(pay/exp*100) : 0;
+  document.getElementById('conv-taux').textContent = taux + '%';
+  DATA.conversion.pipeline = { exposees: exp, interessees: parseInt(document.getElementById('pipe-interessees').value)||0, test: parseInt(document.getElementById('pipe-test').value)||0, payantes: pay };
+  saveData();
+}
+
+async function genererMessageConversion() {
+  var type = document.getElementById('conv-msg-type').value;
+  var contexte = document.getElementById('conv-msg-contexte').value.trim();
+  var btn = document.getElementById('btn-gen-conv-msg');
+  var result_div = document.getElementById('conv-msg-result');
+  btn.disabled = true; btn.textContent = 'Génération...';
+  result_div.style.display = 'none';
+  var types = { statut_whatsapp: "un statut WhatsApp court et accrocheur (max 3 lignes)", post_facebook: "un post Facebook engageant avec appel à action", mp_prospect: "un message privé chaleureux pour approcher une prospect", relance_silencieuse: "un message de relance douce pour une prospect silencieuse depuis 2 jours", offre_payante: "un message naturel de présentation de l'offre payante à une cliente en fin de test", temoignage: "un post témoignage percutant basé sur les résultats d'une cliente" };
+  var prompt = "Génère " + types[type] + " pour L'Architecte du Diner. " + (contexte ? "Contexte : " + contexte : "") + " Règles : ton chaleureux, jamais régime/privation/interdit/calories, finir par Lucrèce | L'Architecte du Dîner. Preuve : mari passé de 97kg à 72kg en changeant uniquement le dîner.";
+  var result = await callAI(prompt, null, 800);
+  btn.disabled = false; btn.textContent = '🤖 Générer le message';
+  if (result) { document.getElementById('conv-msg-result-text').textContent = result; result_div.style.display = ''; showToast('Message généré !'); }
+}
+
 updateRoleBadge();
 updateBackupStatus();
 startBackupReminder();
 startAlerteEngine();
+initConversion();
 document.getElementById('dash-date').textContent = new Date().toLocaleDateString('fr-FR', {
   weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
 });
@@ -6354,6 +6908,8 @@ const PAGE_TITLES = {
   planning: 'Planning Semaine',
   ebooks: 'Ebooks IA',
   feuilleroute: 'Feuilles de Route',
+  capcut: 'Assistant CapCut',
+  conversion: 'Plan de Conversion 30 Jours',
   parametres: 'Paramètres'
 };
 
