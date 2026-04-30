@@ -2396,8 +2396,43 @@ input, textarea, select { font-family: 'DM Sans', sans-serif; }
       <textarea class="form-textarea" id="param-instruct-msgs" style="min-height:80px" placeholder="Ex: Toujours commencer par le prénom..."></textarea>
       <button class="btn btn-vert btn-sm" style="margin-top:8px;width:100%" onclick="saveInstructMsgs()">💾 Enregistrer instructions messages</button>
       <div class="divider"></div>
-      <div class="card-title" style="margin-bottom:10px">💾 Sauvegarde & Partage</div>
+      <div class="card-title" style="margin-bottom:10px">💾 Sauvegarde & Synchronisation</div>
       <div id="backup-status" style="font-size:12px;margin-bottom:14px;color:var(--muted)">Vérification...</div>
+
+      <!-- Google Drive -->
+      <div style="background:var(--cream);border-radius:10px;padding:14px;margin-bottom:10px;border:1px solid var(--border)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <span style="font-size:18px">🔵</span>
+          <div style="font-size:13px;font-weight:600;color:var(--forest)">Sync Google Drive</div>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Sauvegarde sur Drive → accessible depuis tous tes appareils automatiquement.</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-vert" style="flex:1" onclick="exportToGoogleDrive()">☁️ Sauvegarder sur Drive</button>
+          <button class="btn btn-outline" style="flex:1" onclick="importFromGoogleDrive()">📥 Importer depuis Drive</button>
+        </div>
+        <div id="gdrive-status" style="font-size:11px;color:var(--muted);margin-top:8px"></div>
+      </div>
+
+      <!-- Lien de sync -->
+      <div style="background:var(--cream);border-radius:10px;padding:14px;margin-bottom:10px;border:1px solid var(--border)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <span style="font-size:18px">🔗</span>
+          <div style="font-size:13px;font-weight:600;color:var(--forest)">Lien de synchronisation</div>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Génère un lien — ouvre-le sur ton téléphone pour importer toutes tes données en 1 clic.</div>
+        <button class="btn btn-vert" style="width:100%" onclick="genSyncLink()">🔗 Générer le lien de sync</button>
+        <div id="sync-link-result" style="display:none;margin-top:10px">
+          <div style="font-size:12px;color:var(--forest);margin-bottom:6px;font-weight:600">Ton lien de sync :</div>
+          <div id="sync-link-display" style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px;font-size:10px;font-family:monospace;word-break:break-all;color:var(--muted);max-height:60px;overflow:hidden"></div>
+          <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+            <button class="btn btn-vert btn-sm" onclick="copySyncLink()">📋 Copier</button>
+            <button class="btn btn-sm" style="background:#25D366;color:#fff" onclick="sendSyncLinkWA()">🟢 Envoyer par WhatsApp</button>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:6px">⚠️ Ce lien contient toutes tes données. Ne le partage qu'avec toi-même.</div>
+        </div>
+      </div>
+
+      <!-- Sauvegarde classique -->
       <div style="background:var(--cream);border-radius:10px;padding:14px;margin-bottom:10px;border:1px solid var(--border)">
         <div style="font-size:13px;font-weight:600;color:var(--forest);margin-bottom:4px">👑 Sauvegarde complète</div>
         <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Toutes les données — clientes, menus, paramètres, règles IA.</div>
@@ -5983,6 +6018,8 @@ function buildCarteHtml(prenom, jour, pct, tel) {
 }
 
 // ══════════════════════════════════════════
+// SYSTÈME PIN & RÔLES
+// ══════════════════════════════════════════
 // MOTEUR D'ALERTES
 // ══════════════════════════════════════════
 function getAlerteSeuil() {
@@ -6189,7 +6226,150 @@ function startAlerteEngine() {
 }
 
 // ══════════════════════════════════════════
-// SYSTÈME PIN & RÔLES
+// SYNCHRONISATION MULTI-APPAREILS
+// ══════════════════════════════════════════
+
+// ── Google Drive ──
+function exportToGoogleDrive() {
+  const el = document.getElementById('gdrive-status');
+  // Préparer les données
+  const payload = JSON.stringify(DATA, null, 2);
+  const fileName = 'DinersIntelligents_sync_' + new Date().toISOString().split('T')[0] + '.json';
+
+  // Créer le fichier et l'ouvrir dans Google Drive via l'URL de téléversement
+  // On utilise l'approche : télécharger + ouvrir Google Drive
+  const blob = new Blob([payload], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName;
+  a.click();
+
+  // Ouvrir Google Drive dans un nouvel onglet
+  setTimeout(() => {
+    window.open('https://drive.google.com/drive/my-drive', '_blank');
+    if (el) el.innerHTML = '<span style="color:var(--vert-ok)">✅ Fichier téléchargé — glisse-le dans Google Drive qui vient de s\'ouvrir</span>';
+  }, 500);
+  showToast('📁 Glisse le fichier téléchargé dans Google Drive');
+}
+
+function importFromGoogleDrive() {
+  // Ouvrir Google Drive pour sélectionner le fichier
+  window.open('https://drive.google.com/drive/my-drive', '_blank');
+  const el = document.getElementById('gdrive-status');
+  if (el) el.innerHTML = '<span style="color:var(--orange)">📂 Télécharge le fichier JSON depuis Drive → puis utilise "Importer un fichier JSON" ci-dessous</span>';
+  showToast('📂 Télécharge le fichier depuis Drive puis importe-le');
+}
+
+// ── Lien de synchronisation ──
+let currentSyncData = '';
+
+function genSyncLink() {
+  // Exclure la clé API du lien pour sécurité
+  const payload = Object.assign({}, DATA);
+  const jsonStr = JSON.stringify(payload);
+
+  // Encoder en base64 pour créer un lien data
+  try {
+    const b64 = btoa(unescape(encodeURIComponent(jsonStr)));
+
+    // Vérifier la taille — si trop grand, proposer seulement les données essentielles
+    if (b64.length > 200000) {
+      // Données allégées : sans les analyses photos et ficheTexte
+      const light = Object.assign({}, DATA);
+      light.clients = (DATA.clients || []).map(c => {
+        const cl = Object.assign({}, c);
+        delete cl.ficheTexte;
+        delete cl.photoAnalyses;
+        return cl;
+      });
+      const lightB64 = btoa(unescape(encodeURIComponent(JSON.stringify(light))));
+      currentSyncData = lightB64;
+      showToast('⚠️ Données allégées (photos exclues pour réduire la taille)');
+    } else {
+      currentSyncData = b64;
+    }
+
+    // Construire le lien vers le logiciel GitHub avec les données
+    const githubUrl = (DATA.params && DATA.params.githubUrl)
+      ? DATA.params.githubUrl
+      : 'https://larchitectedudiner.github.io/tableau-de-bord/';
+    const syncUrl = githubUrl + '?sync=' + currentSyncData;
+
+    const resultEl = document.getElementById('sync-link-result');
+    const displayEl = document.getElementById('sync-link-display');
+    if (resultEl) resultEl.style.display = 'block';
+    if (displayEl) displayEl.textContent = syncUrl.substring(0, 100) + '... (' + Math.round(syncUrl.length/1024) + ' KB)';
+
+    showToast('🔗 Lien de sync généré !');
+  } catch(e) {
+    showToast('❌ Données trop volumineuses pour un lien. Utilise l\'export JSON.');
+  }
+}
+
+function copySyncLink() {
+  if (!currentSyncData) return;
+  const githubUrl = (DATA.params && DATA.params.githubUrl)
+    ? DATA.params.githubUrl
+    : 'https://larchitectedudiner.github.io/tableau-de-bord/';
+  const syncUrl = githubUrl + '?sync=' + currentSyncData;
+  navigator.clipboard.writeText(syncUrl).then(() => {
+    showToast('📋 Lien copié ! Ouvre-le sur ton téléphone.');
+  }).catch(() => {
+    const t = document.createElement('textarea');
+    t.value = syncUrl; document.body.appendChild(t); t.select();
+    document.execCommand('copy'); document.body.removeChild(t);
+    showToast('📋 Lien copié !');
+  });
+}
+
+function sendSyncLinkWA() {
+  if (!currentSyncData) return;
+  const githubUrl = (DATA.params && DATA.params.githubUrl)
+    ? DATA.params.githubUrl
+    : 'https://larchitectedudiner.github.io/tableau-de-bord/';
+  const syncUrl = githubUrl + '?sync=' + currentSyncData;
+  const msg = 'Sync Dîners Intelligents 🔄\n\nOuvre ce lien sur ton appareil pour importer toutes les données :\n\n' + syncUrl;
+  const coachTel = DATA.params && DATA.params.waTel ? DATA.params.waTel : '';
+  if (coachTel) {
+    window.open('https://wa.me/' + coachTel + '?text=' + encodeURIComponent(msg), '_blank');
+  } else {
+    navigator.clipboard.writeText(syncUrl);
+    showToast('📋 Lien copié — colle-le dans WhatsApp pour toi-même');
+  }
+}
+
+// ── Lire le paramètre sync au chargement ──
+function checkSyncParam() {
+  const params = new URLSearchParams(window.location.search);
+  const syncData = params.get('sync');
+  if (!syncData) return;
+
+  try {
+    const jsonStr = decodeURIComponent(escape(atob(syncData)));
+    const imported = JSON.parse(jsonStr);
+
+    // Confirmer avant d'écraser
+    const nbClientes = (imported.clients || []).length;
+    if (confirm('📥 Données de synchronisation détectées !\n\n' + nbClientes + ' cliente(s) trouvée(s).\n\nImporter ces données ? Tes données locales seront remplacées.')) {
+      // Préserver clé API et PIN locaux
+      if (!imported.apiKey && DATA.apiKey) imported.apiKey = DATA.apiKey;
+      if (!imported.pinDirection && DATA.pinDirection) imported.pinDirection = DATA.pinDirection;
+      DATA = imported;
+      saveData();
+      // Nettoyer l'URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+      showToast('✅ Synchronisation réussie — ' + nbClientes + ' cliente(s) importée(s)');
+      renderDashboard();
+    } else {
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  } catch(e) {
+    console.error('Sync error:', e);
+    showToast('❌ Erreur de synchronisation');
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+}
 // ══════════════════════════════════════════
 let currentRole = 'direction'; // 'direction' ou 'assistant'
 let pinCallback = null;
@@ -6352,6 +6532,7 @@ const _originalResetAll = typeof resetAll === 'function' ? resetAll : null;
 
 // Init role badge — appelé après loadData au bas du script
 loadData();
+checkSyncParam();
 renderDashboard();
 // ══════════════════════════════════════════
 // EBOOKS IA
