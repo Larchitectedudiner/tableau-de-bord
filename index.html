@@ -5779,10 +5779,12 @@ function genCarteSuivi() {
   const netlifyBase = (DATA.params && DATA.params.netlifyUrl) ? DATA.params.netlifyUrl : '';
 
   // Construire le lien Netlify si URL configurée
+  // Nettoyer le prénom pour l'URL : enlever parenthèses et caractères spéciaux
+  const prenomUrl = prenom.replace(/[()'"&%]/g, '').trim();
   let lienCarte = '';
   if (netlifyBase) {
     lienCarte = netlifyBase
-      + '?prenom=' + encodeURIComponent(prenom)
+      + '?prenom=' + encodeURIComponent(prenomUrl)
       + '&jour=' + j
       + '&pct=' + pct
       + (coachTel ? '&tel=' + coachTel : '');
