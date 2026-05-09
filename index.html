@@ -1247,6 +1247,37 @@ input, textarea, select { font-family: 'DM Sans', sans-serif; }
 }
 
 .bnav-menu-item .micon { font-size: 22px; }
+
+/* ── SP CHIPS ── */
+.sp-chip {
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: var(--cream-dark);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+.sp-chip.active {
+  background: var(--forest);
+  border-color: var(--forest);
+  color: white;
+  font-weight: 600;
+}
+.sp-chip.active-clay {
+  background: var(--clay);
+  border-color: var(--clay);
+  color: white;
+}
+.sp-chip-sm {
+  padding: 6px 10px;
+  font-size: 11px;
+}
 </style>
 </head>
 <body>
@@ -1269,12 +1300,13 @@ input, textarea, select { font-family: 'DM Sans', sans-serif; }
     <div class="nav-item" data-page="alertes"><span class="icon">🚨</span> Alertes <span id="nav-alerte-badge" style="display:none;background:var(--rouge);color:#fff;border-radius:10px;font-size:10px;font-weight:700;padding:1px 6px;margin-left:4px"></span></div>
     <div class="nav-item" data-page="messagerie"><span class="icon">💬</span> Messagerie</div>
     <div class="nav-item" data-page="challenge"><span class="icon">📅</span> Challenge 28J</div>
+    <div class="nav-item" data-page="suivi-physique"><span class="icon">📊</span> Suivi Physique</div>
     <div class="nav-item" data-page="resultats"><span class="icon">⚖️</span> Résultats</div>
     <div class="nav-item" data-page="finance"><span class="icon">💰</span> Finance</div>
 
     <div class="nav-section-label" style="margin-top:8px">Outils</div>
     <div class="nav-item" data-page="menus"><span class="icon">🥘</span> Menus IA</div>
-    <div class="nav-item" data-page="import"><span class="icon">📥</span> Import Fiche</div>
+    <div class="nav-item" data-page="import"><span class="icon">📥</span> Imports & Fiches</div>
     <div class="nav-item" data-page="photos"><span class="icon">📸</span> Analyse Photos</div>
     <div class="nav-item" data-page="vente"><span class="icon">🛍️</span> Page de Vente</div>
     <div class="nav-item" data-page="bibliotheque"><span class="icon">📚</span> Bibliothèque</div>
@@ -1284,6 +1316,7 @@ input, textarea, select { font-family: 'DM Sans', sans-serif; }
     <div class="nav-item" data-page="feuilleroute"><span class="icon">🗺️</span> Feuilles de Route</div>
     <div class="nav-item" data-page="capcut"><span class="icon">🎬</span> Assistant CapCut</div>
     <div class="nav-item" data-page="conversion"><span class="icon">🚀</span> Plan Conversion</div>
+    <div class="nav-item" data-page="suivipro"><span class="icon">📊</span> Suivi Pro</div>
     <div class="nav-item" data-page="parametres" data-role="direction"><span class="icon">⚙️</span> Paramètres</div>
   </div>
 
@@ -1342,8 +1375,8 @@ input, textarea, select { font-family: 'DM Sans', sans-serif; }
   </div>
   <div class="grid-4" style="margin-bottom:22px" id="dash-stats"></div>
   <div class="grid-2" style="margin-bottom:22px">
-    <div id="dash-action" class="action-card">
-      <h3>⚡ Prochaine action prioritaire</h3>
+    <div id="dash-action" class="action-card" style="cursor:pointer" onclick="dashActionClick()" title="Cliquer pour accéder directement">
+      <h3>⚡ Prochaine action prioritaire <span style="font-size:11px;color:var(--muted);font-weight:400;float:right">cliquer pour y aller →</span></h3>
       <div class="action-text" id="action-text">Calcul en cours...</div>
       <div class="action-sub" id="action-sub"></div>
     </div>
@@ -1450,14 +1483,18 @@ input, textarea, select { font-family: 'DM Sans', sans-serif; }
         </div>
         <div class="alert alert-terra" style="margin-top:10px;font-size:12px" id="msg-action-bar"></div>
       </div>
+      <div style="margin-bottom:6px;font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px">Type de message</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">
-        <button class="btn btn-sm btn-outline" onclick="setMsgType('matin')">🌅 Matin</button>
-        <button class="btn btn-sm btn-outline" onclick="setMsgType('soir')">🌙 Soir</button>
-        <button class="btn btn-sm btn-outline" onclick="setMsgType('relance')">🔔 Relance</button>
-        <button class="btn btn-sm btn-outline" onclick="setMsgType('victoire')">🏆 Victoire</button>
-        <button class="btn btn-sm btn-outline" onclick="setMsgType('temoignage')">⭐ Témoignage</button>
-        <button class="btn btn-sm btn-outline" onclick="setMsgType('bienvenue')">👋 Bienvenue</button>
+        <button class="btn btn-sm btn-outline msg-type-btn" onclick="setMsgType('matin')" title="Motivation dès le réveil">🌅 Matin</button>
+        <button class="btn btn-sm btn-outline msg-type-btn" onclick="setMsgType('midi')" title="Marche + remplir fiche">☀️ Midi</button>
+        <button class="btn btn-sm btn-outline msg-type-btn" onclick="setMsgType('soir')" title="Dîner du soir">🌙 Soir</button>
+        <button class="btn btn-sm btn-outline msg-type-btn" onclick="setMsgType('relance')">🔔 Relance</button>
+        <button class="btn btn-sm btn-outline msg-type-btn" onclick="setMsgType('victoire')">🏆 Victoire</button>
+        <button class="btn btn-sm btn-outline msg-type-btn" onclick="setMsgType('temoignage')">⭐ Témoignage</button>
+        <button class="btn btn-sm btn-outline msg-type-btn" onclick="setMsgType('bienvenue')">👋 Bienvenue</button>
+        <button class="btn btn-sm btn-outline msg-type-btn" onclick="setMsgType('continuer')" title="Proposer la suite après 28J">🎯 Continuer</button>
       </div>
+      <div id="msg-type-hint" style="font-size:11px;color:var(--muted);margin-bottom:10px;padding:8px;background:var(--cream-dark);border-radius:8px;display:none"></div>
       <div style="background:var(--cream-dark);border-radius:12px;padding:14px;margin-bottom:14px;border:1px solid var(--border)">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
           <div style="font-size:13px;font-weight:600;color:var(--forest)">🌿 Carte Suivi du Matin</div>
@@ -1466,6 +1503,34 @@ input, textarea, select { font-family: 'DM Sans', sans-serif; }
         <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Génère le lien de la carte interactive pour que ta cliente remplisse son suivi du matin en quelques secondes.</div>
         <button class="btn btn-vert" style="width:100%" onclick="genCarteSuivi()">📋 Générer la carte du matin</button>
         <div id="carte-suivi-result" style="display:none;margin-top:10px"></div>
+      </div>
+
+      <!-- ── Carte Journée ── -->
+      <div class="card" style="margin-top:12px;border-top:3px solid #C4622D">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+          <div class="card-title">☀️ Carte Bilan Journée</div>
+          <span style="font-size:10px;background:#FDF0E8;color:#C4622D;padding:2px 8px;border-radius:10px;font-family:sans-serif;font-weight:600">15h – 16h</span>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Déjeuner · Grignotages · Hydratation · Marche — tu reçois tout pour décider du dîner ce soir.</div>
+        <button class="btn btn-vert" style="width:100%;background:#C4622D" onclick="genCarteJournee()">☀️ Générer la carte journée</button>
+        <div id="carte-journee-result" style="display:none;margin-top:10px"></div>
+      </div>
+
+      <!-- ── Carte Soir ── -->
+      <div class="card" style="margin-top:12px;border-top:3px solid #1C3A2E">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+          <div class="card-title">🌙 Carte Bilan Soir</div>
+          <span style="font-size:10px;background:#EBF2EC;color:var(--forest);padding:2px 8px;border-radius:10px;font-family:sans-serif;font-weight:600">Après le dîner</span>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Dîner · Gainage (exercices à cocher) · Corps · Poids · Victoire du jour.</div>
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-family:sans-serif;cursor:pointer;margin-bottom:10px">
+          <input type="checkbox" id="gainage-actif" checked style="accent-color:var(--forest);width:15px;height:15px"> Gainage actif pour cette cliente
+        </label>
+        <button class="btn btn-vert" style="width:100%" onclick="genCarteSoir()">🌙 Générer la carte soir</button>
+        <div id="carte-soir-result" style="display:none;margin-top:10px"></div>
+      </div>
+
+      <div style="display:none">x
       </div>
       <div class="form-group">
         <label class="form-label">Message personnalisé (optionnel)</label>
@@ -1519,10 +1584,48 @@ input, textarea, select { font-family: 'DM Sans', sans-serif; }
   <div style="display:flex;gap:4px;margin-bottom:16px;border-bottom:1.5px solid var(--border-strong);flex-wrap:wrap" id="result-tabs">
     <button class="result-tab active" data-tab="poids" onclick="switchResultTab('poids',this)">📉 Poids</button>
     <button class="result-tab" data-tab="bienetre" onclick="switchResultTab('bienetre',this)">⚡ Bien-être</button>
-    <button class="result-tab" data-tab="import-suivi" onclick="switchResultTab('import-suivi',this)">📥 Import Suivi</button>
+    <button class="result-tab" data-tab="mensurations" onclick="switchResultTab('mensurations',this)">📏 Mensurations</button>
     <button class="result-tab" data-tab="temoignages" onclick="switchResultTab('temoignages',this)">⭐ Témoignages</button>
   </div>
   <div id="result-content"></div>
+</div>
+
+
+<!-- ── SUIVI PHYSIQUE ── -->
+<div class="page" id="page-suivi-physique">
+  <div class="page-header">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div>
+        <h1>Suivi Physique & Score</h1>
+        <p>Mesures, activité, score discipline — Résultats visibles</p>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <div style="background:var(--forest);color:white;padding:10px 18px;border-radius:12px;font-size:12px;font-weight:600">
+          🍽️ Le dîner reste le levier principal
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group" style="max-width:300px;margin-bottom:20px">
+    <select class="form-select" id="sp2-client" onchange="sp2Init()"><option value="">— Sélectionner une cliente —</option></select>
+  </div>
+
+  <!-- Onglets toujours visibles -->
+  <div style="display:flex;gap:4px;margin-bottom:16px;border-bottom:1.5px solid var(--border-strong);flex-wrap:wrap" id="sp2-nav-tabs">
+    <button class="result-tab sp2-nav active" data-sp2nav="baseline" onclick="sp2NavTab('baseline',this)">🏁 Baseline J1</button>
+    <button class="result-tab sp2-nav" data-sp2nav="quotidien" onclick="sp2NavTab('quotidien',this)">📋 Suivi quotidien</button>
+    <button class="result-tab sp2-nav" data-sp2nav="mesures" onclick="sp2NavTab('mesures',this)">📏 Mesures physiques</button>
+    <button class="result-tab sp2-nav" data-sp2nav="score" onclick="sp2NavTab('score',this)">🏆 Score & Action</button>
+  </div>
+  <div id="sp2-tab-preview">
+    <!-- Preview shown when no client selected -->
+    <div id="sp2-no-client-msg" style="background:var(--cream-dark);border:1px dashed var(--border-strong);border-radius:12px;padding:24px;text-align:center;color:var(--muted);font-size:13px">
+      <div style="font-size:28px;margin-bottom:8px">👆</div>
+      Sélectionne une cliente pour afficher et remplir son suivi
+    </div>
+  </div>
+  <div id="sp2-content"></div>
 </div>
 
 <!-- ── FINANCE ── -->
@@ -1717,36 +1820,164 @@ input, textarea, select { font-family: 'DM Sans', sans-serif; }
 <!-- ── IMPORT FICHE ── -->
 <div class="page" id="page-import">
   <div class="page-header">
-    <h1>Import Fiche Adhérent</h1>
-    <p>Colle le message WhatsApp reçu de Netlify</p>
+    <h1>Centre d'Importation</h1>
+    <p>Toutes les importations de fiches en un seul endroit</p>
   </div>
-  <div class="grid-2">
-    <div class="card">
-      <div class="form-group">
-        <label class="form-label">Message WhatsApp reçu</label>
-        <textarea class="form-textarea" id="import-text" style="min-height:200px" placeholder="Colle ici le message complet reçu depuis la fiche adhérent..."></textarea>
+
+  <!-- Onglets d'import -->
+  <div style="display:flex;gap:4px;margin-bottom:20px;border-bottom:1.5px solid var(--border-strong);flex-wrap:wrap">
+    <button class="result-tab active" data-import-tab="adherent" onclick="switchImportTab('adherent',this)">👤 Fiche Adhérente</button>
+    <button class="result-tab" data-import-tab="suivi-matin" onclick="switchImportTab('suivi-matin',this)">🌅 Suivi Matin</button>
+    <button class="result-tab" data-import-tab="mesures" onclick="switchImportTab('mesures',this)">📏 Mesures Hebdo</button>
+    <button class="result-tab" data-import-tab="temoignage" onclick="switchImportTab('temoignage',this)">⭐ Témoignage</button>
+  </div>
+  <div id="import-tab-content">
+    <!-- Fiche adhérente - affiché par défaut -->
+    <div id="import-tab-adherent">
+      <div class="grid-2">
+        <div class="card">
+          <div style="background:var(--cream-dark);border-radius:8px;padding:12px;margin-bottom:14px;font-size:12px;color:var(--muted)">
+            <strong style="color:var(--forest)">Comment ça marche :</strong><br>
+            1. La cliente remplit sa fiche d'inscription<br>
+            2. Tu reçois un message WhatsApp avec ses données<br>
+            3. Colle ce message ci-dessous → profil créé automatiquement
+          </div>
+          <div class="form-group">
+            <label class="form-label">Message WhatsApp reçu</label>
+            <textarea class="form-textarea" id="import-text" style="min-height:180px" placeholder="Colle ici le message complet reçu..."></textarea>
+          </div>
+          <button class="btn btn-primary" style="width:100%" onclick="parseImport()">📥 Analyser et créer le profil</button>
+          <div id="import-result" style="margin-top:14px"></div>
+        </div>
+        <div id="import-preview" style="display:none">
+          <div class="card">
+            <div class="card-title" style="margin-bottom:12px">👤 Prévisualisation — Vérifie et corrige</div>
+            <div id="import-fields" style="margin-bottom:16px"></div>
+            <button class="btn btn-primary" style="width:100%" onclick="createFromImport()">✅ Créer le profil cliente</button>
+          </div>
+        </div>
       </div>
-      <button class="btn btn-primary" style="width:100%" onclick="parseImport()">📥 Importer la fiche</button>
-      <div id="import-result" style="margin-top:14px"></div>
     </div>
-  </div>
-  <!-- Zone de prévisualisation -->
-  <div id="import-preview" style="display:none;margin-top:20px">
-    <div class="card">
-      <div class="card-title">👤 Prévisualisation — Vérifie et corrige si besoin</div>
-      <div id="import-fields" style="margin-bottom:16px"></div>
-      <button class="btn btn-primary" style="width:100%" onclick="createFromImport()">✅ Créer le profil cliente</button>
+
+    <!-- Suivi Matin -->
+    <div id="import-tab-suivi-matin" style="display:none">
+      <div class="grid-2">
+        <div class="card">
+          <div style="background:var(--cream-dark);border-radius:8px;padding:12px;margin-bottom:14px;font-size:12px;color:var(--muted)">
+            <strong style="color:var(--forest)">Comment ça marche :</strong><br>
+            1. La cliente remplit sa carte suivi du matin<br>
+            2. Elle t'envoie le récapitulatif sur WhatsApp<br>
+            3. Colle le message ici → données enregistrées sur son profil
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cliente</label>
+            <select class="form-select" id="import-suivi-client"><option value="">— Sélectionner —</option></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Message WhatsApp reçu</label>
+            <textarea class="form-textarea" id="suivi-import-text" style="min-height:180px" placeholder="Ex:&#10;Suivi matin - Jour 10&#10;Énergie: Bien&#10;Sommeil: 4/5&#10;Digestion: Légère&#10;Dîner hier: Facile&#10;Marche: 35 min"></textarea>
+          </div>
+          <button class="btn btn-primary" style="width:100%" onclick="importSuiviMatin()">🔍 Analyser et enregistrer</button>
+          <div id="suivi-import-result" style="margin-top:12px"></div>
+        </div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:12px">📋 Derniers imports suivi</div>
+          <div id="suivi-import-history" style="font-size:12px;color:var(--muted)">Sélectionne une cliente pour voir l'historique</div>
+        </div>
+      </div>
     </div>
-  </div>
-  <div style="display:none">
+
+    <!-- Mesures Hebdo -->
+    <div id="import-tab-mesures" style="display:none">
+      <div class="grid-2">
+        <div class="card">
+          <div style="background:var(--cream-dark);border-radius:8px;padding:12px;margin-bottom:14px;font-size:12px;color:var(--muted)">
+            <strong style="color:var(--forest)">Mesures hebdomadaires :</strong><br>
+            Enregistre le poids et le tour de taille de ta cliente chaque semaine.<br>
+            Ces données s'afficheront automatiquement dans Suivi Physique.
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cliente</label>
+            <select class="form-select" id="import-mesures-client" onchange="loadImportMesuresBaseline()"><option value="">— Sélectionner —</option></select>
+          </div>
+          <div id="import-mesures-baseline" style="display:none;background:var(--beige,#FFF8F0);border-radius:8px;padding:10px;margin-bottom:12px;font-size:12px"></div>
+          <div class="form-group">
+            <label class="form-label">Semaine du challenge</label>
+            <select class="form-select" id="import-mesures-semaine">
+              <option value="0">🏁 Baseline (Jour 1 — début programme)</option>
+              <option value="1">S1 — Fin semaine 1</option>
+              <option value="2">S2 — Fin semaine 2</option>
+              <option value="3">S3 — Fin semaine 3</option>
+              <option value="4">S4 — Fin semaine 4 (J28)</option>
+            </select>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="form-group">
+              <label class="form-label">⚖️ Poids (kg)</label>
+              <input class="form-input" type="number" step="0.1" id="import-mesures-poids" placeholder="ex: 72.5">
+            </div>
+            <div class="form-group">
+              <label class="form-label">📏 Tour de taille (cm)</label>
+              <input class="form-input" type="number" step="0.5" id="import-mesures-taille" placeholder="ex: 85">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">💬 Ressenti général (1-5)</label>
+            <select class="form-select" id="import-mesures-ressenti">
+              <option value="3">3/5 — Moyen</option>
+              <option value="4">4/5 — Bien</option>
+              <option value="5">5/5 — Excellent</option>
+              <option value="2">2/5 — Difficile</option>
+              <option value="1">1/5 — Très difficile</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" style="width:100%" onclick="importMesuresHebdo()">💾 Enregistrer dans Suivi Physique</button>
+          <div id="import-mesures-result" style="margin-top:12px"></div>
+        </div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:12px">📈 Évolution enregistrée</div>
+          <div id="import-mesures-history" style="font-size:12px;color:var(--muted)">Sélectionne une cliente pour voir son évolution</div>
+        </div>
+      </div>
     </div>
-    <div class="card">
-      <div class="card-title" style="margin-bottom:12px">💡 Comment ça marche</div>
-      <div style="font-size:13px;color:var(--muted);line-height:1.7">
-        <p>1. La cliente remplit sa fiche sur Netlify</p>
-        <p style="margin-top:6px">2. Tu reçois un message WhatsApp avec ses données</p>
-        <p style="margin-top:6px">3. Tu colles ce message ici</p>
-        <p style="margin-top:6px">4. Le logiciel crée automatiquement sa fiche cliente</p>
+
+    <!-- Témoignage -->
+    <div id="import-tab-temoignage" style="display:none">
+      <div class="grid-2">
+        <div class="card">
+          <div class="form-group">
+            <label class="form-label">Cliente</label>
+            <select class="form-select" id="import-temo-client"><option value="">— Sélectionner —</option></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">📝 Témoignage reçu (WhatsApp, audio retranscrit, etc.)</label>
+            <textarea class="form-textarea" id="import-temo-text" style="min-height:140px" placeholder="Colle ou tape ici le témoignage de la cliente..."></textarea>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="form-group">
+              <label class="form-label">⚖️ Poids perdu (kg)</label>
+              <input class="form-input" type="number" step="0.1" id="import-temo-poids" placeholder="ex: 4.5">
+            </div>
+            <div class="form-group">
+              <label class="form-label">📏 Tour de taille perdu (cm)</label>
+              <input class="form-input" type="number" step="0.5" id="import-temo-taille" placeholder="ex: 6">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">📸 Photo avant/après disponible ?</label>
+            <select class="form-select" id="import-temo-photo">
+              <option value="non">Non</option>
+              <option value="oui">Oui — photo reçue</option>
+              <option value="accord">Oui — accord partagé</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" style="width:100%" onclick="importTemoignage()">⭐ Enregistrer le témoignage</button>
+          <div id="import-temo-result" style="margin-top:12px"></div>
+        </div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:12px">⭐ Témoignages enregistrés</div>
+          <div id="import-temo-history" style="font-size:12px;color:var(--muted)">Sélectionne une cliente pour voir ses témoignages</div>
+        </div>
       </div>
     </div>
   </div>
@@ -1788,27 +2019,85 @@ input, textarea, select { font-family: 'DM Sans', sans-serif; }
 <!-- ── BIBLIOTHÈQUE ── -->
 <div class="page" id="page-bibliotheque">
   <div class="page-header">
-    <div style="display:flex;align-items:center;justify-content:space-between">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
       <div>
         <h1>Bibliothèque Dîners</h1>
-        <p>Tes recettes favorites</p>
+        <p>Tes recettes favorites + Analyse & Amélioration IA</p>
       </div>
       <button class="btn btn-primary" onclick="openNewRecette()">+ Nouvelle recette</button>
     </div>
   </div>
-  <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap">
-    <input class="form-input" style="max-width:240px" placeholder="🔍 Rechercher..." id="biblio-search" oninput="renderBibliotheque()">
-    <select class="form-select" style="max-width:190px" id="biblio-cat" onchange="renderBibliotheque()">
-      <option value="">Toutes catégories</option>
-      <option>Protéines + Légumes</option>
-      <option>Soupe</option>
-      <option>Poisson</option>
-      <option>Poulet</option>
-      <option>Végétarien</option>
-      <option>Rapide (10 min)</option>
-    </select>
+
+  <!-- Onglets bibliothèque -->
+  <div style="display:flex;gap:4px;margin-bottom:18px;border-bottom:1.5px solid var(--border-strong)">
+    <button class="result-tab active" onclick="switchBiblioTab('recettes',this)">📚 Mes recettes</button>
+    <button class="result-tab" onclick="switchBiblioTab('analyse',this)">🤖 Analyser un menu IA</button>
   </div>
-  <div id="biblio-grid" class="grid-3"></div>
+
+  <!-- Onglet Recettes -->
+  <div id="biblio-tab-recettes">
+    <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap">
+      <input class="form-input" style="max-width:240px" placeholder="🔍 Rechercher..." id="biblio-search" oninput="renderBibliotheque()">
+      <select class="form-select" style="max-width:190px" id="biblio-cat" onchange="renderBibliotheque()">
+        <option value="">Toutes catégories</option>
+        <option>Protéines + Légumes</option>
+        <option>Soupe</option>
+        <option>Poisson</option>
+        <option>Poulet</option>
+        <option>Végétarien</option>
+        <option>Rapide (10 min)</option>
+      </select>
+    </div>
+    <div id="biblio-grid" class="grid-3"></div>
+  </div>
+
+  <!-- Onglet Analyse IA -->
+  <div id="biblio-tab-analyse" style="display:none">
+    <div class="grid-2">
+      <div class="card">
+        <h3 style="font-size:15px;margin-bottom:6px">📋 Colle ton menu ici</h3>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:14px">
+          Copie-colle un menu existant (Menus IA, notes WhatsApp, recette trouvée en ligne...) et demande à l'IA de l'analyser, l'améliorer ou créer un accompagnement structuré.
+        </p>
+        <div class="form-group">
+          <label class="form-label">Menu à analyser</label>
+          <textarea class="form-textarea" id="biblio-menu-input" style="min-height:200px" placeholder="Exemple :&#10;Dîner lundi : poulet grillé + haricots verts à la vapeur&#10;Dîner mardi : soupe de légumes maison + œufs durs&#10;Dîner mercredi : tilapia cuit au four + courgettes sautées&#10;...&#10;&#10;Ou colle directement un menu généré par l'IA."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ce que tu veux de l'IA</label>
+          <select class="form-select" id="biblio-analyse-type">
+            <option value="analyser">🔍 Analyser ce menu (cohérence avec les 5 piliers)</option>
+            <option value="ameliorer">✨ Améliorer ce menu (suggestions concrètes)</option>
+            <option value="accompagnement">📅 Créer un accompagnement structuré semaine par semaine</option>
+            <option value="substitutions">🔄 Proposer des substitutions avec ingrédients locaux ivoiriens</option>
+            <option value="variante">🍽️ Créer une variante de ce menu pour éviter la monotonie</option>
+            <option value="integrer">👨‍👩‍👧 Adapter pour toute la famille (enfants + mari)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contexte cliente (optionnel)</label>
+          <input class="form-input" id="biblio-analyse-context" placeholder="ex: Cliente végétarienne, 3 enfants, budget limité...">
+        </div>
+        <button class="btn btn-primary" style="width:100%" onclick="biblioAnalyseIA()">🤖 Analyser avec l'IA</button>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <h3 style="font-size:15px">💬 Résultat IA</h3>
+          <button class="btn btn-sm btn-outline" id="biblio-copy-btn" onclick="biblioCopyResult()" style="display:none">📋 Copier</button>
+        </div>
+        <div id="biblio-analyse-result" style="flex:1;min-height:280px;background:var(--cream-dark);border-radius:10px;padding:16px;font-size:13px;line-height:1.7;overflow-y:auto;white-space:pre-wrap">
+          <div style="color:var(--muted);text-align:center;padding-top:60px">
+            <div style="font-size:28px;margin-bottom:8px">🤖</div>
+            Colle un menu à gauche et choisis le type d'analyse pour commencer
+          </div>
+        </div>
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <button class="btn btn-sm btn-outline" onclick="biblioSaveAsRecette()" style="flex:1">💾 Sauvegarder en recette</button>
+          <button class="btn btn-sm btn-outline" onclick="biblioSendToMenus()" style="flex:1">→ Envoyer aux Menus</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- ── PÔLE ARTISTIQUE ── -->
@@ -1886,10 +2175,34 @@ input, textarea, select { font-family: 'DM Sans', sans-serif; }
 <!-- ── PLANNING ── -->
 <div class="page" id="page-planning">
   <div class="page-header">
-    <h1>Planning Semaine</h1>
-    <p>Vue hebdomadaire de tes activités</p>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <div>
+        <h1>Planning Semaine</h1>
+        <p>Vue hebdomadaire — ajustable selon tes objectifs</p>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <select class="form-select" id="planning-objectif" style="max-width:240px" onchange="renderPlanning()">
+          <option value="standard">Mode standard (équilibré)</option>
+          <option value="lancement">🚀 Mode lancement (recruter des clientes)</option>
+          <option value="suivi">🎯 Mode suivi intensif (clientes actives)</option>
+          <option value="contenu">📱 Mode contenu (croissance réseaux)</option>
+          <option value="conversion">💰 Mode conversion (ventes)</option>
+        </select>
+        <button class="btn btn-sm btn-outline" onclick="planningGenIA()">🤖 Adapter avec l'IA</button>
+      </div>
+    </div>
   </div>
+  <div id="planning-objectif-banner" style="display:none;margin-bottom:16px"></div>
   <div id="planning-grid"></div>
+  <div id="planning-ai-result" style="display:none;margin-top:20px">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <h3 style="font-size:15px">🤖 Planning IA personnalisé</h3>
+        <button class="btn btn-sm btn-outline" onclick="document.getElementById('planning-ai-result').style.display='none'">✕ Fermer</button>
+      </div>
+      <div id="planning-ai-content" style="font-size:13px;line-height:1.8;white-space:pre-wrap;background:var(--cream-dark);padding:16px;border-radius:10px"></div>
+    </div>
+  </div>
 </div>
 
 <!-- ── EBOOKS IA ── -->
@@ -2333,6 +2646,233 @@ input, textarea, select { font-family: 'DM Sans', sans-serif; }
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════ -->
+<!-- SUIVI PRO -->
+<!-- ══════════════════════════════════════════ -->
+<div class="page" id="page-suivipro">
+  <div class="page-header">
+    <h1>📊 Suivi Pro Clientes</h1>
+    <p>Journalier · Hebdomadaire · Mensuel — Lecture rapide en 10 secondes</p>
+  </div>
+  <!-- Guide utilisation -->
+  <div style="background:var(--cream-dark);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:20px">
+    <div style="font-size:13px;font-weight:700;color:var(--forest);margin-bottom:10px">💡 Comment utiliser le Suivi Pro ?</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;font-size:12px;color:var(--muted)">
+      <div><strong style="color:var(--clay)">🎯 KPIs</strong><br>Vue globale de la progression de ta cliente sur tout le programme</div>
+      <div><strong style="color:var(--clay)">📅 Journalier</strong><br>Enregistre un bilan rapide chaque jour : dîner, marche, énergie, digestion</div>
+      <div><strong style="color:var(--clay)">📊 Hebdo</strong><br>Bilan de semaine avec poids, tour de taille, dîners et marches effectués</div>
+      <div><strong style="color:var(--clay)">📈 Mensuel</strong><br>Vue d'ensemble du mois et décisions stratégiques coach</div>
+      <div><strong style="color:var(--clay)">👤 Profil</strong><br>Paramètres de départ : poids initial, objectif, tour de taille cible</div>
+    </div>
+    <div style="margin-top:10px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);padding-top:8px">
+      ⚡ <strong>Usage recommandé :</strong> Le matin après les messages → bilan journalier rapide. Le vendredi → bilan hebdo avec mesures. Le Suivi Physique centralise les données de mesure pour les témoignages.
+    </div>
+  </div>
+
+  <!-- Sélecteur cliente + onglets -->
+  <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px">
+    <select class="form-select" id="sp-client-select" style="flex:1;min-width:180px" onchange="spLoadClient()">
+      <option value="">— Sélectionner une cliente —</option>
+    </select>
+    <button class="btn btn-primary btn-sm" onclick="spNouveauJour()">+ Bilan du jour</button>
+    <button class="btn btn-outline btn-sm" onclick="spNouvelleHebdo()">+ Bilan semaine</button>
+  </div>
+
+  <!-- Onglets -->
+  <div style="display:flex;gap:4px;margin-bottom:16px;border-bottom:2px solid var(--border-strong);flex-wrap:wrap" id="sp-tabs">
+    <button class="result-tab active" onclick="spSwitchTab('kpi',this)">🎯 KPIs</button>
+    <button class="result-tab" onclick="spSwitchTab('journalier',this)">📅 Journalier</button>
+    <button class="result-tab" onclick="spSwitchTab('hebdo',this)">📊 Hebdo</button>
+    <button class="result-tab" onclick="spSwitchTab('mensuel',this)">📈 Mensuel</button>
+    <button class="result-tab" onclick="spSwitchTab('profil',this)">👤 Profil</button>
+  </div>
+
+  <div id="sp-content"></div>
+</div>
+
+<!-- MODAL BILAN JOURNALIER PREMIUM -->
+<div id="sp-modal-jour" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:500;overflow-y:auto;-webkit-overflow-scrolling:touch">
+  <div style="background:var(--cream);margin:16px auto 40px;max-width:480px;border-radius:24px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.3)">
+    
+    <!-- Header modal -->
+    <div style="background:var(--forest);padding:20px 24px;position:relative">
+      <button onclick="spCloseModal('sp-modal-jour')" style="position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.15);border:none;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer;color:white;display:flex;align-items:center;justify-content:center">✕</button>
+      <div style="font-family:Cormorant Garamond,serif;font-size:22px;font-weight:600;color:var(--beige)">📅 Bilan du Jour</div>
+      <input type="date" id="sp-jour-date" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:white;padding:6px 12px;font-size:13px;margin-top:8px;color-scheme:dark">
+      <!-- Score temps réel -->
+      <div style="display:flex;align-items:center;gap:12px;margin-top:12px">
+        <div style="flex:1;background:rgba(255,255,255,0.1);border-radius:20px;height:6px;overflow:hidden">
+          <div id="sp-score-bar" style="height:100%;background:var(--clay);border-radius:20px;transition:width 0.3s;width:0%"></div>
+        </div>
+        <div style="color:white;font-size:16px;font-weight:700" id="sp-score-live">0<span style="font-size:11px;opacity:0.7">/5</span></div>
+      </div>
+    </div>
+
+    <div style="padding:20px 24px;display:flex;flex-direction:column;gap:16px">
+
+      <!-- DÎNER -->
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--forest);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">🍽️ Dîner d'hier soir</div>
+        <input class="form-input" id="sp-jour-diner" placeholder="Ex: Poulet grillé, épinards, carottes" oninput="spUpdateScore()" style="margin-bottom:10px">
+        <div style="display:flex;gap:8px">
+          <button class="sp-chip" id="sp-q-bon" onclick="spSelectQ('bon')" style="flex:1">✅ Bon</button>
+          <button class="sp-chip" id="sp-q-moyen" onclick="spSelectQ('moyen')" style="flex:1">😐 Moyen</button>
+          <button class="sp-chip" id="sp-q-mauvais" onclick="spSelectQ('mauvais')" style="flex:1">❌ Mauvais</button>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="sp-chip" id="sp-qt-leger" onclick="spSelectQt('leger')" style="flex:1">🪶 Léger</button>
+          <button class="sp-chip" id="sp-qt-normal" onclick="spSelectQt('normal')" style="flex:1">👌 Normal</button>
+          <button class="sp-chip" id="sp-qt-lourd" onclick="spSelectQt('lourd')" style="flex:1">⚠️ Lourd</button>
+        </div>
+      </div>
+
+      <!-- MARCHE -->
+      <div style="background:var(--white);border-radius:14px;padding:14px">
+        <div style="font-size:12px;font-weight:600;color:var(--forest);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">🚶 Marche après déjeuner</div>
+        <div style="font-size:11px;color:var(--clay);font-weight:600;margin-bottom:10px">🎯 Objectif : 1 km minimum</div>
+        <div style="display:flex;gap:8px;margin-bottom:10px">
+          <button class="sp-chip" id="sp-marche-oui" onclick="spToggleMarche('oui')" style="flex:1">✅ Oui — objectif atteint</button>
+          <button class="sp-chip" id="sp-marche-non" onclick="spToggleMarche('non')" style="flex:1">❌ Non</button>
+        </div>
+        <div id="sp-marche-details" style="display:none;gap:8px">
+          <input class="form-input" type="number" step="0.5" id="sp-marche-km" placeholder="Distance en km (ex: 1.5)" oninput="spUpdateScore()" style="margin-bottom:6px">
+          <input class="form-input" type="number" id="sp-marche-min" placeholder="Durée en minutes (ex: 15)">
+        </div>
+      </div>
+
+      <!-- DIGESTION -->
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--forest);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">🏥 Digestion</div>
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <div style="flex:1">
+            <div style="font-size:11px;color:var(--muted);margin-bottom:6px">Transit</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <button class="sp-chip sp-chip-sm" id="sp-tr-normal" onclick="spSelectTransit('normal')">✅ Normal</button>
+              <button class="sp-chip sp-chip-sm" id="sp-tr-difficile" onclick="spSelectTransit('difficile')">⚠️ Difficile</button>
+              <button class="sp-chip sp-chip-sm" id="sp-tr-non" onclick="spSelectTransit('non')">❌ Absent</button>
+            </div>
+          </div>
+          <div style="flex:1">
+            <div style="font-size:11px;color:var(--muted);margin-bottom:6px">Ballonnements</div>
+            <div style="display:flex;gap:6px">
+              <button class="sp-chip sp-chip-sm" id="sp-bal-non" onclick="spSelectBal('non')">❌ Non</button>
+              <button class="sp-chip sp-chip-sm" id="sp-bal-oui" onclick="spSelectBal('oui')">✅ Oui</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ENERGIE -->
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--forest);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">⚡ Énergie du jour</div>
+        <div style="display:flex;gap:8px">
+          <button class="sp-chip" id="sp-en-bonne" onclick="spSelectEnergie('bonne')" style="flex:1">⚡ Bonne</button>
+          <button class="sp-chip" id="sp-en-moyenne" onclick="spSelectEnergie('moyenne')" style="flex:1">😐 Moyenne</button>
+          <button class="sp-chip" id="sp-en-faible" onclick="spSelectEnergie('faible')" style="flex:1">😴 Faible</button>
+        </div>
+      </div>
+
+      <!-- ECART -->
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--forest);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">⚠️ Écart alimentaire ?</div>
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <button class="sp-chip" id="sp-ecart-non" onclick="spToggleEcart('non')" style="flex:1">✅ Non — parfait</button>
+          <button class="sp-chip" id="sp-ecart-oui" onclick="spToggleEcart('oui')" style="flex:1">⚠️ Oui</button>
+        </div>
+        <input class="form-input" id="sp-ecart-desc" placeholder="Décris l'écart..." style="display:none">
+      </div>
+
+      <!-- NOTE LIBRE -->
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--forest);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">✨ Note du jour (optionnel)</div>
+        <textarea class="form-textarea" id="sp-jour-note" style="min-height:60px" placeholder="Victoire, difficulté, observation..."></textarea>
+      </div>
+
+      <button class="btn btn-primary" style="width:100%;padding:16px;font-size:16px" onclick="spSauvegarderJour()">💾 Sauvegarder ce bilan</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL BILAN HEBDOMADAIRE -->
+<div id="sp-modal-hebdo" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;overflow-y:auto">
+  <div style="background:var(--cream);margin:20px auto;max-width:480px;border-radius:20px;padding:24px;position:relative">
+    <button onclick="spCloseModal('sp-modal-hebdo')" style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted)">✕</button>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--forest);margin-bottom:20px">📊 Bilan Semaine</div>
+
+    <div style="display:flex;gap:12px">
+      <div class="form-group" style="flex:1">
+        <label class="form-label">Semaine du</label>
+        <input class="form-input" type="date" id="sp-hebdo-debut">
+      </div>
+      <div class="form-group" style="flex:1">
+        <label class="form-label">Au</label>
+        <input class="form-input" type="date" id="sp-hebdo-fin">
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px">
+      <div class="form-group" style="flex:1">
+        <label class="form-label">⚖️ Poids (kg)</label>
+        <input class="form-input" type="number" step="0.1" id="sp-hebdo-poids" placeholder="Ex: 78.5">
+      </div>
+      <div class="form-group" style="flex:1">
+        <label class="form-label">📏 Tour de taille (cm)</label>
+        <input class="form-input" type="number" step="0.5" id="sp-hebdo-tour" placeholder="Ex: 85">
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px">
+      <div class="form-group" style="flex:1">
+        <label class="form-label">🍽️ Dîners respectés</label>
+        <select class="form-select" id="sp-hebdo-diners">
+          <option value="7">7/7</option>
+          <option value="6">6/7</option>
+          <option value="5">5/7</option>
+          <option value="4">4/7</option>
+          <option value="3">3/7</option>
+          <option value="2">2/7</option>
+          <option value="1">1/7</option>
+          <option value="0">0/7</option>
+        </select>
+      </div>
+      <div class="form-group" style="flex:1">
+        <label class="form-label">🚶 Marches effectuées</label>
+        <select class="form-select" id="sp-hebdo-marches">
+          <option value="7">7/7</option>
+          <option value="6">6/7</option>
+          <option value="5">5/7</option>
+          <option value="4">4/7</option>
+          <option value="3">3/7</option>
+          <option value="2">2/7</option>
+          <option value="1">1/7</option>
+          <option value="0">0/7</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">🏥 État digestif global</label>
+      <select class="form-select" id="sp-hebdo-digestif">
+        <option value="bon">✅ Bon</option>
+        <option value="moyen">😐 Moyen</option>
+        <option value="mauvais">❌ Mauvais</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">🔍 Problème principal identifié</label>
+      <input class="form-input" id="sp-hebdo-probleme" placeholder="Ex: grignotage, constipation, manque marche...">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">📝 Décision coach</label>
+      <textarea class="form-textarea" id="sp-hebdo-decision" style="min-height:70px" placeholder="Ex: Alléger le dîner du lundi, augmenter marche à 20min..."></textarea>
+    </div>
+
+    <button class="btn btn-primary" style="width:100%;margin-top:8px" onclick="spSauvegarderHebdo()">💾 Sauvegarder ce bilan</button>
+  </div>
+</div>
+
 <div class="page" id="page-parametres">
   <div class="page-header">
     <h1>Paramètres</h1>
@@ -2399,68 +2939,76 @@ input, textarea, select { font-family: 'DM Sans', sans-serif; }
       <div class="card-title" style="margin-bottom:10px">💾 Sauvegarde & Synchronisation</div>
       <div id="backup-status" style="font-size:12px;margin-bottom:14px;color:var(--muted)">Vérification...</div>
 
-      <!-- Google Drive -->
+      <!-- Sync mobile - méthode fiable JSON -->
       <div style="background:var(--cream);border-radius:10px;padding:14px;margin-bottom:10px;border:1px solid var(--border)">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-          <span style="font-size:18px">🔵</span>
-          <div style="font-size:13px;font-weight:600;color:var(--forest)">Sync Google Drive</div>
+          <span style="font-size:18px">📱</span>
+          <div style="font-size:13px;font-weight:600;color:var(--forest)">Sync vers ton téléphone</div>
+          <span style="background:#22C55E;color:#fff;font-size:9px;padding:2px 6px;border-radius:10px;font-weight:600">RECOMMANDÉ</span>
         </div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Sauvegarde sur Drive → accessible depuis tous tes appareils automatiquement.</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn btn-vert" style="flex:1" onclick="exportToGoogleDrive()">☁️ Sauvegarder sur Drive</button>
-          <button class="btn btn-outline" style="flex:1" onclick="importFromGoogleDrive()">📥 Importer depuis Drive</button>
-        </div>
-        <div id="gdrive-status" style="font-size:11px;color:var(--muted);margin-top:8px"></div>
-      </div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:12px">Envoie le fichier de données à toi-même par WhatsApp — importe-le sur ton téléphone en quelques secondes.</div>
 
-      <!-- Lien de sync -->
-      <div style="background:var(--cream);border-radius:10px;padding:14px;margin-bottom:10px;border:1px solid var(--border)">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-          <span style="font-size:18px">🔗</span>
-          <div style="font-size:13px;font-weight:600;color:var(--forest)">Lien de synchronisation</div>
-        </div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Génère un lien — ouvre-le sur ton téléphone pour importer toutes tes données en 1 clic.</div>
-        <button class="btn btn-vert" style="width:100%" onclick="genSyncLink()">🔗 Générer le lien de sync</button>
-        <div id="sync-link-result" style="display:none;margin-top:10px">
-          <div style="font-size:12px;color:var(--forest);margin-bottom:6px;font-weight:600">Ton lien de sync :</div>
-          <div id="sync-link-display" style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px;font-size:10px;font-family:monospace;word-break:break-all;color:var(--muted);max-height:60px;overflow:hidden"></div>
-          <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
-            <button class="btn btn-vert btn-sm" onclick="copySyncLink()">📋 Copier</button>
-            <button class="btn btn-sm" style="background:#25D366;color:#fff" onclick="sendSyncLinkWA()">🟢 Envoyer par WhatsApp</button>
+        <!-- Étapes visuelles -->
+        <div style="background:#fff;border-radius:8px;padding:12px;margin-bottom:12px;border:1px solid var(--border)">
+          <div style="font-size:11px;font-weight:600;color:var(--forest);margin-bottom:8px">Comment faire :</div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;align-items:center;gap:8px;font-size:12px">
+              <span style="background:var(--forest);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0">1</span>
+              <span>Clique <strong>"💾 Télécharger mes données"</strong></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:12px">
+              <span style="background:var(--forest);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0">2</span>
+              <span>Sur WhatsApp → ouvre ta conversation avec <strong>toi-même</strong></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:12px">
+              <span style="background:var(--forest);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0">3</span>
+              <span>📎 → Document → sélectionne le fichier .json téléchargé → Envoie</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:12px">
+              <span style="background:var(--forest);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0">4</span>
+              <span>Sur ton téléphone → appuie sur le fichier → <strong>Ouvrir</strong></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:12px">
+              <span style="background:#22C55E;color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0">5</span>
+              <span>Paramètres → <strong>"📤 Importer"</strong> → sélectionne le fichier → ✅ Sync faite !</span>
+            </div>
           </div>
-          <div style="font-size:11px;color:var(--muted);margin-top:6px">⚠️ Ce lien contient toutes tes données. Ne le partage qu'avec toi-même.</div>
+    <div class="form-group" style="margin-top:12px">
+      <label class="form-label">☀️ URL Carte Bilan Journée (Netlify)</label>
+      <input class="form-input" id="param-netlify-journee-url" placeholder="https://carte-journee-di.netlify.app" type="url">
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;font-family:sans-serif">Déploie carte-journee.html sur Netlify et colle l'URL ici</div>
+    </div>
+    <div class="form-group" style="margin-top:12px">
+      <label class="form-label">🌙 URL Carte Bilan Soir (Netlify)</label>
+      <input class="form-input" id="param-netlify-soir-url" placeholder="https://carte-soir-di.netlify.app" type="url">
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;font-family:sans-serif">Déploie carte-soir.html sur Netlify et colle l'URL ici</div>
+    </div>
+        </div>
+
+        <button class="btn btn-vert" style="width:100%" onclick="exportSyncFile()">💾 Télécharger mes données</button>
+        <div style="font-size:11px;color:var(--muted);margin-top:8px;text-align:center">Le fichier contient toutes tes clientes, menus et paramètres.</div>
+      </div>
+
+      <!-- Sauvegarde fichier -->
+      <div style="background:var(--cream);border-radius:10px;padding:14px;margin-bottom:10px;border:1px solid var(--border)">
+        <div style="font-size:13px;font-weight:600;color:var(--forest);margin-bottom:4px">💾 Sauvegarde complète</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Télécharge tes données en JSON — pour archiver ou restaurer.</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-vert" style="flex:1" onclick="exportData()">📥 Télécharger</button>
+          <label class="btn btn-outline" style="flex:1;cursor:pointer;text-align:center">
+            📤 Importer
+            <input type="file" accept=".json" style="display:none" onchange="importData(event)">
+          </label>
         </div>
       </div>
 
-      <!-- Sauvegarde classique -->
-      <div style="background:var(--cream);border-radius:10px;padding:14px;margin-bottom:10px;border:1px solid var(--border)">
-        <div style="font-size:13px;font-weight:600;color:var(--forest);margin-bottom:4px">👑 Sauvegarde complète</div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Toutes les données — clientes, menus, paramètres, règles IA.</div>
-        <button class="btn btn-vert" style="width:100%" onclick="exportData()">📥 Télécharger la sauvegarde</button>
-      </div>
-      <div style="background:var(--cream);border-radius:10px;padding:14px;margin-bottom:10px;border:1px solid var(--border)">
+      <!-- Export assistante -->
+      <div style="background:var(--cream);border-radius:10px;padding:14px;margin-bottom:14px;border:1px solid var(--border)">
         <div style="font-size:13px;font-weight:600;color:var(--forest);margin-bottom:4px">🤝 Partager avec l'assistante</div>
         <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Export sans clé API ni PIN — sûr à partager.</div>
         <button class="btn btn-outline" style="width:100%" onclick="exportForAssistant()">📤 Exporter version assistante</button>
       </div>
-      <div style="background:var(--cream);border-radius:10px;padding:14px;margin-bottom:10px;border:1px solid var(--border)">
-        <div style="font-size:13px;font-weight:600;color:var(--forest);margin-bottom:4px">📂 Importer des données</div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Charge un fichier de sauvegarde.</div>
-        <label class="btn btn-outline" style="width:100%;cursor:pointer;text-align:center;display:block">
-          📥 Importer un fichier JSON
-          <input type="file" accept=".json" style="display:none" onchange="importData(event)">
-        </label>
-      </div>
-      <div style="background:var(--vert-ok-bg);border:1px solid rgba(13,122,78,0.2);border-radius:10px;padding:14px;margin-bottom:14px">
-        <div style="font-size:12px;font-weight:600;color:var(--vert-ok);margin-bottom:8px">📋 Comment partager avec ton assistante</div>
-        <ol style="font-size:12px;color:var(--forest);line-height:1.8;margin:0;padding-left:18px">
-          <li>Clique <strong>"Exporter version assistante"</strong></li>
-          <li>Envoie ce fichier par <strong>WhatsApp ou Email</strong></li>
-          <li>Elle ouvre le logiciel sur son appareil</li>
-          <li>Elle va dans Paramètres → <strong>"Importer"</strong></li>
-          <li>Elle a toutes les données — sans ta clé ni ton PIN</li>
-        </ol>
-      </div>
+
       <button class="btn btn-danger btn-sm" style="width:100%" onclick="requirePin('direction', resetAll)">🗑️ Tout effacer</button>
     </div>
   </div>
@@ -2522,6 +3070,7 @@ input, textarea, select { font-family: 'DM Sans', sans-serif; }
   <div class="drawer-item" onclick="goPage('bibliotheque');toggleDrawer()">📚 Bibliothèque</div>
   <div class="drawer-item" onclick="goPage('artistique');toggleDrawer()">🎨 Pôle Artistique</div>
   <div class="drawer-item" onclick="goPage('planning');toggleDrawer()">🗓️ Planning</div>
+  <div class="drawer-item" onclick="goPage('suivipro');toggleDrawer()">📊 Suivi Pro</div>
   <div class="drawer-item" onclick="goPage('parametres');toggleDrawer()">⚙️ Paramètres</div>
 </div>
 
@@ -2736,6 +3285,8 @@ function onPageLoad(id) {
   else if (id === 'alertes') { loadAlerteSeuil(); renderAlertesPage(); }
   else if (id === 'photos') populatePhotoClients();
   else if (id === 'parametres') loadParams();
+  else if (id === 'suivi-physique') sp2PopulateSelect();
+  else if (id === 'import') { importPopulateSelects('suivi-matin'); importPopulateSelects('mesures'); importPopulateSelects('temoignage'); }
 }
 
 // ══════════════════════════════════════════
@@ -2754,10 +3305,10 @@ function renderDashboard() {
   const membres = clients.length;
 
   document.getElementById('dash-stats').innerHTML = [
-    statCard('📊', 'Progression', actifs.length + '/' + Math.max(10, actifs.length + 2), 'clientes actives'),
-    statCard('👥', 'Clientes', clients.length, 'au total'),
-    statCard('💬', 'Membres WA', membres, 'dans la communauté'),
-    statCard('💰', 'Revenus', revenus.toLocaleString('fr-FR') + ' FCFA', 'estimés')
+    statCard('📊', 'Clientes actives', actifs.length + '/' + Math.max(10, actifs.length + 2), 'en cours de programme', 'clients'),
+    statCard('👥', 'Total clientes', clients.length, 'dans ta base', 'clients'),
+    statCard('💰', 'Revenus', revenus.toLocaleString('fr-FR') + ' FCFA', 'estimés ce mois', 'finance'),
+    statCard('📈', 'Suivi physique', actifs.filter(c => c.sp2 && c.sp2.mesures && c.sp2.mesures.length > 0).length + ' clientes', 'avec données mesures', 'suivi-physique')
   ].join('');
 
   // Action prioritaire
@@ -2808,8 +3359,10 @@ function renderDashboard() {
   ].join('');
 }
 
-function statCard(icon, label, value, sub) {
-  return '<div class="stat-card"><div class="stat-icon">' + icon + '</div><div class="stat-label">' + label + '</div><div class="stat-value">' + value + '</div><div class="stat-sub">' + sub + '</div></div>';
+function statCard(icon, label, value, sub, page) {
+  const click = page ? ' onclick="goPage(\'' + page + '\')" style="cursor:pointer;transition:transform 0.15s,box-shadow 0.15s" onmouseenter="this.style.transform=\'translateY(-2px)\';this.style.boxShadow=\'0 8px 24px rgba(15,36,25,0.15)\'" onmouseleave="this.style.transform=\'\';this.style.boxShadow=\'\'"' : '';
+  const arrow = page ? '<div style="position:absolute;top:12px;right:12px;font-size:11px;color:var(--muted)">→</div>' : '';
+  return '<div class="stat-card"' + click + '>' + arrow + '<div class="stat-icon">' + icon + '</div><div class="stat-label">' + label + '</div><div class="stat-value">' + value + '</div><div class="stat-sub">' + sub + '</div></div>';
 }
 
 function getSilence(client) {
@@ -2817,6 +3370,21 @@ function getSilence(client) {
   const diff = (Date.now() - new Date(client.lastContact).getTime()) / 86400000;
   return Math.floor(diff);
 }
+
+
+function dashActionClick() {
+  // Navigate to most relevant page based on current alerts
+  const alertes = computeAlertes();
+  if (alertes.critique.length > 0) {
+    // Open the client's fiche directly
+    openFiche(alertes.critique[0].clientId);
+  } else if (alertes.important.length > 0) {
+    goPage('suivipro');
+  } else {
+    goPage('messagerie');
+  }
+}
+
 
 // ══════════════════════════════════════════
 // SCORE ENGAGEMENT
@@ -3403,11 +3971,10 @@ async function genMsg() {
   if (!c) return;
   const custom = document.getElementById('msg-custom').value;
   const j = getChallengeDay(c);
+  const typeCtx = getMsgTypeContext(currentMsgType, c, j);
   const prompt = [
-    'Génère un message WhatsApp ' + currentMsgType + ' pour ' + c.prenom + '.',
-    'Statut : ' + c.statut + '. Jour challenge : ' + j + '.',
-    c.objectif ? 'Objectif : ' + c.objectif : '',
-    custom ? 'Contexte : ' + custom : '',
+    typeCtx,
+    custom ? 'CONTEXTE SUPPLÉMENTAIRE : ' + custom : '',
     getMsgInstructions()
   ].filter(Boolean).join('\n');
   const result = await callAI(prompt);
@@ -4976,24 +5543,126 @@ function copyHex(hex, el) {
 // ══════════════════════════════════════════
 // PLANNING
 // ══════════════════════════════════════════
+
+function planningCheck(cb) {
+  var p = cb.closest('label');
+  if (p) {
+    p.style.textDecoration = cb.checked ? 'line-through' : 'none';
+    p.style.opacity = cb.checked ? '0.5' : '1';
+  }
+}
+
+const PLANNING_TASKS = {
+  standard: {
+    'Lundi':    [['📱','Contenus réseaux sociaux (caption + photo dîner)'], ['💬','Messages matin à toutes les clientes actives'], ['🍽️','Générer menus de la semaine']],
+    'Mardi':    [['⚖️','Suivi hebdomadaire poids clientes (fin S1/S2/S3/S4)'], ['📥','Importer fiches suivi reçues'], ['💰','Admin & finance (paiements)']],
+    'Mercredi': [['👤','Traiter les nouvelles fiches d\'inscription'], ['💬','Messages soir + relances douces'], ['📚','Ajouter recette en bibliothèque']],
+    'Jeudi':    [['🏆','Post résultat / victoire cliente sur les réseaux'], ['🎯','Closing prospects chauds (WhatsApp direct)'], ['📊','Bilan mi-semaine suivi pro']],
+    'Vendredi': [['⭐','Demander témoignages aux clientes J28 proches'], ['📅','Planifier contenu semaine suivante'], ['💾','Export / sauvegarde données']],
+    'Samedi':   [['👥','Partager menu de la semaine dans le groupe WA'], ['💬','Engagement communauté (commentaires, DM)'], ['🔄','Revue stratégique 15 min']],
+    'Dimanche': [['🌿','Repos & ressourcement'], ['📋','Planification objectifs semaine suivante'], ['✍️','Journal / réflexion personnelle']]
+  },
+  lancement: {
+    'Lundi':    [['📱','Vidéo TikTok/Reels : histoire du mari (97→72 kg)'], ['💬','5 DM à prospects intéressées'], ['🎯','Commentaires stratégiques (thé minceur)']],
+    'Mardi':    [['📱','Post Facebook preuve : avant/après chiffres'], ['🔔','Relancer les prospects qui n\'ont pas répondu'], ['👤','Importer fiches nouvelles inscrites']],
+    'Mercredi': [['📱','Contenu pédagogie : pourquoi le riz du soir...'], ['💬','Annoncer le défi 7 jours gratuit'], ['📥','Traiter les demandes de fiches']],
+    'Jeudi':    [['📱','Story coulisses : ma vraie cuisine ce soir'], ['🎯','Qualifier prospects : qui est prête pour le challenge ?'], ['💬','Follow-up prospects chauds']],
+    'Vendredi': [['📱','Post engagement : question à la communauté'], ['🚀','Annoncer ouverture prochaine places challenge'], ['📊','Compter prospects qualifiées cette semaine']],
+    'Samedi':   [['📱','Reel résultat : chiffre concret + histoire'], ['💬','Engager dans les commentaires 30 min'], ['📋','Préparer contenu semaine suivante']],
+    'Dimanche': [['🌿','Repos'], ['🎯','Objectifs semaine prochaine : combien de prospects à contacter ?'], ['📱','1 story authentique de ta vie']]
+  },
+  suivi: {
+    'Lundi':    [['🌅','Messages matin personnalisés à chaque cliente'], ['📏','Vérifier mesures hebdo en attente'], ['📊','Calculer scores discipline semaine écoulée']],
+    'Mardi':    [['☀️','Messages midi (marche + fiche suivi)'], ['📥','Importer fiches suivi reçues dans Centre d\'import'], ['🚨','Contacter clientes score < 4']],
+    'Mercredi': [['🌙','Messages soir dîner intelligent'], ['📈','Mettre à jour évolution poids / taille'], ['💬','Message encouragement clientes S2+']],
+    'Jeudi':    [['📊','Bilan suivi pro clientes actives'], ['🏆','Célébrer les victoires de la semaine'], ['🎯','Identifier clientes à risque d\'abandon']],
+    'Vendredi': [['⭐','Demander retours / témoignages'], ['💾','Sauvegarder toutes les données'], ['📅','Préparer menus semaine prochaine']],
+    'Samedi':   [['👥','Live ou message groupe WA : conseil du week-end'], ['📱','Post résultat anonymisé (avec accord)'], ['📋','Planifier relances semaine prochaine']],
+    'Dimanche': [['🌿','Repos'], ['🍽️','Filmer ton propre dîner intelligent'], ['📊','Revue stratégique du programme']]
+  },
+  contenu: {
+    'Lundi':    [['📱','Vidéo éducation : un pilier de la méthode'], ['📸','Photo flat lay dîner du soir'], ['✍️','Rédiger 3 captions pour la semaine']],
+    'Mardi':    [['📱','Reel : "avant le dîner intelligent / après"'], ['💬','Répondre à TOUS les commentaires'], ['📊','Analyser stats (portée, engagement)']],
+    'Mercredi': [['📱','Post Facebook : histoire / preuve'], ['📸','Préparer contenu jeudi + vendredi'], ['💬','DM aux nouveaux abonnés']],
+    'Jeudi':    [['📱','Story "coulisses" de ta cuisine'], ['📱','Post pédagogie court (30 sec)'], ['🎯','Identifier 3 créateurs à commenter stratégiquement']],
+    'Vendredi': [['📱','Reel récapitulatif semaine'], ['📱','Post engagement (question communauté)'], ['📋','Calendrier contenu semaine suivante']],
+    'Samedi':   [['📱','Contenu léger et personnel (humain)'], ['💬','Live ou voice note groupe WA'], ['📸','Préparer photos weekend']],
+    'Dimanche': [['🌿','Repos créatif'], ['📱','1 story authentique max'], ['📋','Idées contenu semaine prochaine']]
+  },
+  conversion: {
+    'Lundi':    [['🎯','Identifier 5 prospects les plus chaudes'], ['💬','Messages personnalisés fermeture doux'], ['📊','Vérifier pipeline conversion']],
+    'Mardi':    [['📱','Post témoignage / résultat chiffré'], ['🎯','Appel ou voice note à 2 prospects'], ['💰','Envoyer lien paiement aux oui']],
+    'Mercredi': [['📱','Contenu "résoudre une objection" (prix, temps...)'], ['💬','Relance douce prospects silencieuses'], ['👤','Importer nouvelles inscriptions]']],
+    'Jeudi':    [['🏆','Partager victoire cliente (preuve sociale)'], ['🎯','Proposer la suite à clientes J21+'], ['💰','Suivre paiements en attente']],
+    'Vendredi': [['📱','Post urgence / dernières places'], ['💬','Follow-up final prospects de la semaine'], ['📊','Bilan : combien de ventes cette semaine ?']],
+    'Samedi':   [['📱','Témoignage + chiffre fort'], ['💬','Engagement + répondre aux questions'], ['🎯','Préparer offre semaine prochaine']],
+    'Dimanche': [['🌿','Repos'], ['📋','Objectifs vente semaine prochaine'], ['✍️','Préparer message d\'ouverture lundi']]
+  }
+};
+
 function renderPlanning() {
   const el = document.getElementById('planning-grid');
+  const bannerEl = document.getElementById('planning-objectif-banner');
   if (!el) return;
+  
+  const mode = (document.getElementById('planning-objectif') || {value:'standard'}).value || 'standard';
+  const tasks = PLANNING_TASKS[mode] || PLANNING_TASKS.standard;
   const days = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
-  const tasks = {
-    'Lundi': ['Messages matin clientes', 'Générer menus semaine', 'Relancer prospects'],
-    'Mardi': ['Contenu Instagram (caption)', 'Suivi poids clientes', 'Admin & finance'],
-    'Mercredi': ['Fiche adhérent — nouvelles inscriptions', 'Messages soir', 'Bibliothèque recettes'],
-    'Jeudi': ['Story Instagram résultat', 'Closing prospects chauds', 'Bilan mi-semaine'],
-    'Vendredi': ['Messages témoignages', 'Contenu semaine suivante', 'Export données'],
-    'Samedi': ['Groupe WA — partage menu', 'Engagement communauté', 'Revue stratégique'],
-    'Dimanche': ['Repos & ressourcement', 'Planification semaine suivante', 'Journal personnel']
+  
+  const banners = {
+    standard: null,
+    lancement: { color:'#1D4ED8', bg:'#DBEAFE', text:'🚀 Mode Lancement — Priorité : recruter tes 5 premières cas tests et publier chaque jour' },
+    suivi: { color:'#2D5016', bg:'#D1FAE5', text:'🎯 Mode Suivi Intensif — Priorité : accompagner tes clientes actives et produire des résultats mesurables' },
+    contenu: { color:'#7C3AED', bg:'#EDE9FE', text:'📱 Mode Contenu — Priorité : croissance organique et notoriété de la marque' },
+    conversion: { color:'#C4622D', bg:'#FEF3C7', text:'💰 Mode Conversion — Priorité : transformer les intéressées en clientes payantes' }
   };
-  el.innerHTML = '<div class="grid-2" style="gap:12px">' + days.map(day =>
-    '<div class="card-sm"><div style="font-size:13px;font-weight:700;color:var(--terra);margin-bottom:8px">' + day + '</div>' +
-    (tasks[day]||[]).map(t => '<div style="display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:4px"><span style="color:var(--gris)">□</span>' + t + '</div>').join('') +
-    '</div>'
-  ).join('') + '</div>';
+  
+  if (bannerEl) {
+    const b = banners[mode];
+    if (b) {
+      bannerEl.style.display = 'block';
+      bannerEl.innerHTML = '<div style="background:' + b.bg + ';color:' + b.color + ';border-radius:10px;padding:12px 16px;font-size:13px;font-weight:600">' + b.text + '</div>';
+    } else {
+      bannerEl.style.display = 'none';
+    }
+  }
+  
+  el.innerHTML = '<div class="grid-2" style="gap:12px">' + days.map(day => {
+    const dayTasks = tasks[day] || [];
+    return '<div class="card-sm" style="cursor:default">' +
+      '<div style="font-size:13px;font-weight:700;color:var(--clay);margin-bottom:10px">' + day + '</div>' +
+      dayTasks.map(([icon, label]) => 
+        '<div style="display:flex;align-items:flex-start;gap:8px;font-size:12px;margin-bottom:6px;padding:4px 0">' +
+        '<span style="flex-shrink:0;font-size:14px">' + icon + '</span>' +
+        '<label style="cursor:pointer;line-height:1.4">' +
+        '<input type="checkbox" style="margin-right:4px;accent-color:var(--forest)" onchange="planningCheck(this)"> ' +
+        label + '</label></div>'
+      ).join('') +
+      '</div>';
+  }).join('') + '</div>';
+}
+
+function planningGenIA() {
+  const mode = (document.getElementById('planning-objectif') || {value:'standard'}).value;
+  const activeClients = (DATA.clients||[]).filter(c => ['actif','engage','payant','cas_test'].includes(c.statut)).length;
+  const prompt = `Tu es coach business pour L'Architecte du Dîner (Lucrèce, Abidjan).
+Mode planning : \${mode}
+Clientes actives actuellement : \${activeClients}
+Méthode : dîner familial comme levier de transformation physique
+
+Génère un planning semaine PERSONNALISÉ avec :
+- 3 actions prioritaires par jour (lundi-dimanche)
+- Adapté au mode "\${mode}"
+- Concret, actionnable, réaliste pour une femme qui gère seule son business
+- Format : JOUR : action1 | action2 | action3
+- Inclure les moments WhatsApp, contenu, suivi clientes`;
+  
+  callAI(prompt).then(result => {
+    if (result) {
+      document.getElementById('planning-ai-result').style.display = 'block';
+      document.getElementById('planning-ai-content').textContent = result;
+    }
+  });
 }
 
 // ══════════════════════════════════════════
@@ -5207,6 +5876,24 @@ function saveParams() {
     if (url.endsWith('/')) url = url.slice(0,-1);
     DATA.params.netlifyUrl = url;
     netlifyEl.value = url;
+  }
+  // Carte Journée URL
+  const netlifyJourneeEl = document.getElementById('param-netlify-journee-url');
+  if (netlifyJourneeEl) {
+    let url = netlifyJourneeEl.value.trim();
+    if (url && !url.startsWith('http')) url = 'https://' + url;
+    if (url.endsWith('/')) url = url.slice(0,-1);
+    DATA.params.netlifyJourneeUrl = url;
+    netlifyJourneeEl.value = url;
+  }
+  // Carte Soir URL
+  const netlifySoirEl = document.getElementById('param-netlify-soir-url');
+  if (netlifySoirEl) {
+    let url = netlifySoirEl.value.trim();
+    if (url && !url.startsWith('http')) url = 'https://' + url;
+    if (url.endsWith('/')) url = url.slice(0,-1);
+    DATA.params.netlifySoirUrl = url;
+    netlifySoirEl.value = url;
   }
   saveData();
   updateNetlifyStatus();
@@ -5518,14 +6205,16 @@ const DEFAULT_MENU_RULES = [
   { id: 'r2', text: 'Maximum 20 minutes de préparation', active: true },
   { id: 'r3', text: 'Ingrédients marché local ivoirien uniquement', active: true },
   { id: 'r4', text: 'Toujours proposer une alternative si ingrédient indisponible', active: true },
-  { id: 'r5', text: 'Protéines + légumes obligatoires dans chaque plat', active: true }
+  { id: 'r5', text: 'Protéines + légumes obligatoires dans chaque plat', active: true },
+  { id: 'r6', text: 'AUCUN formatage Markdown : pas de *, **, -, _, #. Texte naturel uniquement.', active: true }
 ];
 const DEFAULT_MSG_RULES = [
   { id: 'm1', text: 'Toujours appeler la cliente par son prénom', active: true },
   { id: 'm2', text: 'Ton chaleureux et maternel, jamais médical', active: true },
   { id: 'm3', text: 'Message court — maximum 5 lignes', active: true },
   { id: 'm4', text: 'Terminer par une question d\'encouragement', active: true },
-  { id: 'm5', text: 'Jamais les mots : régime, privation, calories, interdit', active: true }
+  { id: 'm5', text: 'Jamais les mots : régime, privation, calories, interdit', active: true },
+  { id: 'm6', text: 'AUCUN formatage Markdown : pas de *, **, -, _, #. Écrire comme un vrai WhatsApp humain.', active: true }
 ];
 
 function renderMenuRules() {
@@ -5627,6 +6316,98 @@ function getMsgInstructions() {
   const rules = (DATA.msgRules || DEFAULT_MSG_RULES).filter(r => r.active).map(r => '- ' + r.text).join('\n');
   const libre = DATA.instructMsgs?.libre || '';
   return (rules ? 'RÈGLES DE TON MESSAGES :\n' + rules : '') + (libre ? '\n\nINSTRUCTIONS SUPPLÉMENTAIRES :\n' + libre : '');
+}
+
+function getMsgTypeContext(type, c, j) {
+  const prenom = c ? c.prenom : '[Cliente]';
+  const poids = c && c.poidsInit ? c.poidsInit + 'kg' : '';
+  const obj = c && c.objectif ? c.objectif : 'transformer son corps';
+  
+  // Anti-répétition : varier les structures
+  const matinStructures = [
+    "Commence par une citation courte inspirante liée à la nourriture ou la famille, puis rappelle l'intention du jour sans mentionner de chiffres.",
+    "Commence par une observation positive sur son parcours jusqu'ici (Jour " + j + "/28), puis donne UNE seule chose concrète à faire aujourd'hui.",
+    "Commence par une image sensorielle liée au dîner intelligent (ex: la vapeur d'une soupe), puis relie ça à la transformation en cours.",
+    "Commence par une question rhétorique courte qui fait réfléchir, puis donne la réponse sous forme d'encouragement personnel.",
+    "Commence par 'Ce matin,' et décris un micro-bénéfice concret qu'elle ressent probablement, puis encourage à tenir aujourd'hui.",
+  ];
+  const midiStructures = [
+    "Rappelle-lui que sa marche de l'après-midi est son moment à elle — 30 minutes où elle investit dans sa propre transformation. Donne un conseil de marche consciente. Termine par l'invitation à remplir sa fiche suivi et te l'envoyer.",
+    "Message court et direct : 1 phrase de motivation sur l'activité physique, 1 phrase sur pourquoi la fiche est importante pour elle (pas pour toi), 1 appel à l'action avec émoji.",
+    "Crée un sentiment d'appartenance : parle du groupe de femmes qui font leur marche aujourd'hui, rappelle-lui qu'elle fait partie de ce cercle. Finis par la demande de la fiche suivi.",
+  ];
+  const soirStructures = [
+    "Message dîner du soir : enthousiasme pour le repas à venir, rappel d'un pilier de la méthode, encouragement à tenir.",
+    "Message soir : valider sa journée même imparfaite, rappeler que LE DÎNER est le levier principal, donner une intention pour préparer le repas de ce soir.",
+  ];
+  const continuerStructures = [
+    "Elle approche de la fin des 28 jours. Rappelle ses résultats observés, exprime ta fierté sincère, présente la suite (coaching ou prochain challenge) comme une évidence naturelle — pas une vente, une continuation logique de son élan.",
+    "Message de transition : valorise ce qu'elle a accompli, pose une question sur comment elle se sent maintenant vs Jour 1, et glisse naturellement la proposition de continuer.",
+  ];
+  
+  const seed = j % 5; // rotation sur 5 structures
+  
+  const contexts = {
+    'matin': {
+      structure: matinStructures[seed],
+      ton: "Chaleureux, personnel, court (5-7 lignes max). PAS de liste. PAS de chiffres. UNE seule idée forte.",
+      objectif: "La cliente se sent vue, motivée, et prête à tenir toute la journée quoi qu'il arrive.",
+      interdits: "Jamais de 'N'oublie pas de...', jamais de 'Tu dois...', jamais de liste à puces."
+    },
+    'midi': {
+      structure: midiStructures[seed % 3],
+      ton: "Direct, énergisant, court (4-5 lignes). Doit donner envie de se lever et marcher.",
+      objectif: "La cliente fait sa marche de 30 min ET remplit sa fiche suivi et te l'envoie.",
+      action: "Inclure clairement : 'Envoie-moi ta fiche suivi quand tu rentres 📋'",
+      interdits: "Jamais de pression. Toujours positif."
+    },
+    'soir': {
+      structure: soirStructures[seed % 2],
+      ton: "Doux, ancré, motivant. Le dîner est présenté comme un acte d'amour pour soi.",
+      objectif: "La cliente prépare un dîner intelligent ce soir avec fierté, pas obligation.",
+    },
+    'relance': {
+      structure: "Pas de reproche. Message bref et chaleureux. Montre que tu penses à elle, pas que tu surveilles. Pose une question ouverte simple.",
+      ton: "Très court (3 lignes max). Bienveillant. Sans pression.",
+    },
+    'victoire': {
+      structure: "Célèbre une victoire spécifique (Jour " + j + ", résultat observé, régularité). Sois authentique et précise — pas générique.",
+      ton: "Enthousiaste, personnel, sincère. Elle doit sentir que c'est ELLE que tu félicites.",
+    },
+    'temoignage': {
+      structure: "Approche douce en 2 temps : d'abord valide ses résultats, puis demande si elle accepterait de partager son vécu pour aider d'autres femmes.",
+      ton: "Humble, reconnaissant, sans pression.",
+    },
+    'bienvenue': {
+      structure: "Message de bienvenue chaleureux. Présente-toi, explique ce qui l'attend en 28 jours, donne-lui la 1ère chose à faire.",
+      ton: "Professionnel et chaleureux. Elle doit se sentir entre de bonnes mains.",
+    },
+    'continuer': {
+      structure: continuerStructures[seed % 2],
+      ton: "Sincère, professionnel, sans pression commerciale. La suite est une évidence.",
+      objectif: "Elle veut continuer naturellement, pas parce qu'on l'a convaincue.",
+    }
+  };
+  
+  const ctx = contexts[type] || contexts['matin'];
+  return `
+TYPE DE MESSAGE : ${type.toUpperCase()}
+CLIENTE : ${prenom} ${poids ? '('+poids+')' : ''}
+JOUR DU CHALLENGE : J${j}/28
+OBJECTIF CLIENT : ${obj}
+
+STRUCTURE À RESPECTER : ${ctx.structure}
+TON REQUIS : ${ctx.ton}
+OBJECTIF DU MESSAGE : ${ctx.objectif || ''}
+${ctx.action ? 'ACTION ATTENDUE : ' + ctx.action : ''}
+${ctx.interdits ? 'INTERDITS ABSOLUS : ' + ctx.interdits : ''}
+
+MARQUE : L'Architecte du Dîner — Lucrèce
+SLOGAN : "Je transforme ta famille en transformant le dîner."
+RÈGLE #1 : Toujours ramener au dîner. Le dîner est le levier principal.
+STYLE : Chaleureux, direct, authentique. Jamais de formules génériques IA.
+FORMAT : WhatsApp — pas de markdown, émojis appropriés, longueur adaptée au type.
+Signe avec : — Lucrèce 🌿`;
 }
 
 // ══════════════════════════════════════════
@@ -5885,6 +6666,106 @@ function genCarteSuivi() {
   }
 }
 
+
+
+function genCarteJournee() {
+  const id = currentMsgClientId || (document.getElementById('msg-client')||{value:''}).value;
+  if (!id) { alert('Sélectionne une cliente d\'abord.'); return; }
+  const c = DATA.clients.find(x => x.id === id);
+  if (!c) return;
+
+  const j = getChallengeDay(c);
+  const prenom = c.prenom;
+  const pct = Math.round(Math.min(100, (j / 28) * 100));
+  const coachTel = (DATA.params && DATA.params.waTel) ? DATA.params.waTel.replace(/\D/g,'') : '';
+  
+  // URL carte journée (à configurer dans Paramètres)
+  const netlifyJournee = (DATA.params && DATA.params.netlifyJourneeUrl) ? DATA.params.netlifyJourneeUrl : '';
+  
+  // Déterminer le paramètre marche selon la cliente
+  const marcheParam = (c.marcheMode === 'matin') ? 'matin' : 'midi';
+  const prenomUrl = prenom.replace(/[()'\"&%]/g, '').trim();
+
+  let lienCarte = '';
+  if (netlifyJournee) {
+    lienCarte = netlifyJournee
+      + '?prenom=' + encodeURIComponent(prenomUrl)
+      + '&jour=' + j
+      + '&pct=' + pct
+      + '&marche=' + marcheParam
+      + (coachTel ? '&tel=' + coachTel : '');
+  }
+
+  const msgComplet = 'Bonjour ' + prenom + ' ☀️\n\nVoici ton bilan de journée — 3 minutes 🌿\nEn fonction de ce que tu m\'envoies, je prépare ton dîner de ce soir.\n\n'
+    + (lienCarte ? lienCarte : '[Lien carte journée — configure l\'URL dans Paramètres]')
+    + '\n\nLucrèce | L\'Architecte du Dîner';
+
+  const el = document.getElementById('carte-journee-result');
+  el.style.display = 'block';
+
+  if (lienCarte) {
+    const waLink = makeWaLink(c.tel || coachTel, msgComplet);
+    el.innerHTML =
+      '<div style="background:#FDF0E8;border-radius:10px;padding:12px;font-size:12px;font-family:sans-serif">' +
+      '<div style="font-weight:700;color:#C4622D;margin-bottom:6px">☀️ Carte Journée — Jour ' + j + '</div>' +
+      '<div style="word-break:break-all;color:#666;font-size:11px;margin-bottom:10px">' + lienCarte + '</div>' +
+      '<a href="' + waLink + '" target="_blank" style="display:block;background:#25D366;color:white;text-align:center;padding:10px;border-radius:10px;text-decoration:none;font-weight:600;font-size:13px">📲 Envoyer par WhatsApp</a>' +
+      '<div style="font-size:10px;color:#999;margin-top:6px;text-align:center">À envoyer vers 15h-16h</div>' +
+      '</div>';
+  } else {
+    el.innerHTML = '<div style="background:#FEF3C7;border-radius:10px;padding:12px;font-size:12px;font-family:sans-serif;color:#92400E">⚠️ Configure l\'URL de la carte journée dans Paramètres → Liens Netlify</div>';
+  }
+}
+
+function genCarteSoir() {
+  const id = currentMsgClientId || (document.getElementById('msg-client')||{value:''}).value;
+  if (!id) { alert('Sélectionne une cliente d\'abord.'); return; }
+  const c = DATA.clients.find(x => x.id === id);
+  if (!c) return;
+
+  const j = getChallengeDay(c);
+  const prenom = c.prenom;
+  const pct = Math.round(Math.min(100, (j / 28) * 100));
+  const coachTel = (DATA.params && DATA.params.waTel) ? DATA.params.waTel.replace(/\D/g,'') : '';
+  
+  // URL carte soir (à configurer dans Paramètres)
+  const netlifySoir = (DATA.params && DATA.params.netlifySoirUrl) ? DATA.params.netlifySoirUrl : '';
+  
+  // Gainage actif ou non selon checkbox
+  const gainageActif = (document.getElementById('gainage-actif') || {checked: true}).checked;
+  const gainageParam = gainageActif ? '1' : '0';
+  const prenomUrl = prenom.replace(/[()'\"&%]/g, '').trim();
+
+  let lienCarte = '';
+  if (netlifySoir) {
+    lienCarte = netlifySoir
+      + '?prenom=' + encodeURIComponent(prenomUrl)
+      + '&jour=' + j
+      + '&pct=' + pct
+      + '&gainage=' + gainageParam
+      + (coachTel ? '&tel=' + coachTel : '');
+  }
+
+  const msgComplet = 'Bonsoir ' + prenom + ' 🌙\n\nBilan du soir — 3 minutes 🌿\n\n'
+    + (lienCarte ? lienCarte : '[Lien carte soir — configure l\'URL dans Paramètres]')
+    + '\n\nLucrèce | L\'Architecte du Dîner';
+
+  const el = document.getElementById('carte-soir-result');
+  el.style.display = 'block';
+
+  if (lienCarte) {
+    const waLink = makeWaLink(c.tel || coachTel, msgComplet);
+    el.innerHTML =
+      '<div style="background:#EBF2EC;border-radius:10px;padding:12px;font-size:12px;font-family:sans-serif">' +
+      '<div style="font-weight:700;color:var(--forest);margin-bottom:6px">🌙 Carte Soir — Jour ' + j + ' · Gainage : ' + (gainageActif ? '✅ Actif' : '❌ Désactivé') + '</div>' +
+      '<div style="word-break:break-all;color:#666;font-size:11px;margin-bottom:10px">' + lienCarte + '</div>' +
+      '<a href="' + waLink + '" target="_blank" style="display:block;background:#25D366;color:white;text-align:center;padding:10px;border-radius:10px;text-decoration:none;font-weight:600;font-size:13px">📲 Envoyer par WhatsApp</a>' +
+      '<div style="font-size:10px;color:#999;margin-top:6px;text-align:center">À envoyer après le dîner · 45 min de délai</div>' +
+      '</div>';
+  } else {
+    el.innerHTML = '<div style="background:#FEF3C7;border-radius:10px;padding:12px;font-size:12px;font-family:sans-serif;color:#92400E">⚠️ Configure l\'URL de la carte soir dans Paramètres → Liens Netlify</div>';
+  }
+}
 
 function copierLienIphone(encodedUri, encodedMsg) {
   const dataUri = decodeURIComponent(encodedUri);
@@ -6229,113 +7110,102 @@ function startAlerteEngine() {
 // SYNCHRONISATION MULTI-APPAREILS
 // ══════════════════════════════════════════
 
-// ── Google Drive ──
-function exportToGoogleDrive() {
-  const el = document.getElementById('gdrive-status');
-  // Préparer les données
-  const payload = JSON.stringify(DATA, null, 2);
-  const fileName = 'DinersIntelligents_sync_' + new Date().toISOString().split('T')[0] + '.json';
-
-  // Créer le fichier et l'ouvrir dans Google Drive via l'URL de téléversement
-  // On utilise l'approche : télécharger + ouvrir Google Drive
-  const blob = new Blob([payload], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = fileName;
-  a.click();
-
-  // Ouvrir Google Drive dans un nouvel onglet
-  setTimeout(() => {
-    window.open('https://drive.google.com/drive/my-drive', '_blank');
-    if (el) el.innerHTML = '<span style="color:var(--vert-ok)">✅ Fichier téléchargé — glisse-le dans Google Drive qui vient de s\'ouvrir</span>';
-  }, 500);
-  showToast('📁 Glisse le fichier téléchargé dans Google Drive');
-}
-
-function importFromGoogleDrive() {
-  // Ouvrir Google Drive pour sélectionner le fichier
-  window.open('https://drive.google.com/drive/my-drive', '_blank');
-  const el = document.getElementById('gdrive-status');
-  if (el) el.innerHTML = '<span style="color:var(--orange)">📂 Télécharge le fichier JSON depuis Drive → puis utilise "Importer un fichier JSON" ci-dessous</span>';
-  showToast('📂 Télécharge le fichier depuis Drive puis importe-le');
-}
-
-// ── Lien de synchronisation ──
-let currentSyncData = '';
-
-function genSyncLink() {
-  // Exclure la clé API du lien pour sécurité
+function getSyncPayload() {
+  // Données allégées : sans ficheTexte et photoAnalyses pour réduire la taille
   const payload = Object.assign({}, DATA);
-  const jsonStr = JSON.stringify(payload);
+  payload.clients = (DATA.clients || []).map(function(c) {
+    var cl = Object.assign({}, c);
+    delete cl.ficheTexte;
+    delete cl.photoAnalyses;
+    return cl;
+  });
+  return JSON.stringify(payload);
+}
 
-  // Encoder en base64 pour créer un lien data
-  try {
-    const b64 = btoa(unescape(encodeURIComponent(jsonStr)));
+function exportSyncFile() {
+  var payload = getSyncPayload();
+  var blob = new Blob([payload], { type: 'application/json' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  var date = new Date().toISOString().split('T')[0];
+  var time = new Date().toTimeString().slice(0,5).replace(':','h');
+  a.download = 'DI_Sync_' + date + '_' + time + '.json';
+  a.click();
+  showToast('💾 Fichier téléchargé — envoie-le à toi-même par WhatsApp !');
+}
 
-    // Vérifier la taille — si trop grand, proposer seulement les données essentielles
-    if (b64.length > 200000) {
-      // Données allégées : sans les analyses photos et ficheTexte
-      const light = Object.assign({}, DATA);
-      light.clients = (DATA.clients || []).map(c => {
-        const cl = Object.assign({}, c);
-        delete cl.ficheTexte;
-        delete cl.photoAnalyses;
-        return cl;
-      });
-      const lightB64 = btoa(unescape(encodeURIComponent(JSON.stringify(light))));
-      currentSyncData = lightB64;
-      showToast('⚠️ Données allégées (photos exclues pour réduire la taille)');
-    } else {
-      currentSyncData = b64;
+// ── Générateur QR Code pur JS (Reed-Solomon simplifié) ──
+function drawQR(canvas, text, size, dark, light) {
+  // Utiliser l'encodage URL court via data URI pour GitHub Pages
+  // Implémentation QR Code Version 1-10 basée sur l'algorithme standard
+  var ctx = canvas.getContext('2d');
+  canvas.width = size;
+  canvas.height = size;
+
+  // Créer les données QR via une approche segmentée
+  // Pour les grandes données, on utilise une version simplifiée
+  var modules = generateQRMatrix(text);
+  if (!modules) {
+    showToast('Données trop complexes pour le QR. Utilise la sauvegarde JSON.');
+    return;
+  }
+
+  var n = modules.length;
+  var cellSize = Math.floor(size / n);
+  var offset = Math.floor((size - n * cellSize) / 2);
+
+  ctx.fillStyle = light;
+  ctx.fillRect(0, 0, size, size);
+
+  for (var r = 0; r < n; r++) {
+    for (var c = 0; c < n; c++) {
+      ctx.fillStyle = modules[r][c] ? dark : light;
+      ctx.fillRect(offset + c * cellSize, offset + r * cellSize, cellSize, cellSize);
     }
-
-    // Construire le lien vers le logiciel GitHub avec les données
-    const githubUrl = (DATA.params && DATA.params.githubUrl)
-      ? DATA.params.githubUrl
-      : 'https://larchitectedudiner.github.io/tableau-de-bord/';
-    const syncUrl = githubUrl + '?sync=' + currentSyncData;
-
-    const resultEl = document.getElementById('sync-link-result');
-    const displayEl = document.getElementById('sync-link-display');
-    if (resultEl) resultEl.style.display = 'block';
-    if (displayEl) displayEl.textContent = syncUrl.substring(0, 100) + '... (' + Math.round(syncUrl.length/1024) + ' KB)';
-
-    showToast('🔗 Lien de sync généré !');
-  } catch(e) {
-    showToast('❌ Données trop volumineuses pour un lien. Utilise l\'export JSON.');
   }
 }
 
-function copySyncLink() {
-  if (!currentSyncData) return;
-  const githubUrl = (DATA.params && DATA.params.githubUrl)
-    ? DATA.params.githubUrl
-    : 'https://larchitectedudiner.github.io/tableau-de-bord/';
-  const syncUrl = githubUrl + '?sync=' + currentSyncData;
-  navigator.clipboard.writeText(syncUrl).then(() => {
-    showToast('📋 Lien copié ! Ouvre-le sur ton téléphone.');
-  }).catch(() => {
-    const t = document.createElement('textarea');
-    t.value = syncUrl; document.body.appendChild(t); t.select();
-    document.execCommand('copy'); document.body.removeChild(t);
-    showToast('📋 Lien copié !');
-  });
-}
+function generateQRMatrix(text) {
+  // Utilise la librairie qrcode-generator chargée dynamiquement
+  try {
+    // Charger qrcode-generator depuis CDN
+    if (typeof qrcode === 'undefined') {
+      // Charger dynamiquement
+      var script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+      document.head.appendChild(script);
 
-function sendSyncLinkWA() {
-  if (!currentSyncData) return;
-  const githubUrl = (DATA.params && DATA.params.githubUrl)
-    ? DATA.params.githubUrl
-    : 'https://larchitectedudiner.github.io/tableau-de-bord/';
-  const syncUrl = githubUrl + '?sync=' + currentSyncData;
-  const msg = 'Sync Dîners Intelligents 🔄\n\nOuvre ce lien sur ton appareil pour importer toutes les données :\n\n' + syncUrl;
-  const coachTel = DATA.params && DATA.params.waTel ? DATA.params.waTel : '';
-  if (coachTel) {
-    window.open('https://wa.me/' + coachTel + '?text=' + encodeURIComponent(msg), '_blank');
-  } else {
-    navigator.clipboard.writeText(syncUrl);
-    showToast('📋 Lien copié — colle-le dans WhatsApp pour toi-même');
+      // Réessayer après chargement
+      script.onload = function() {
+        setTimeout(function() { genQRCode(); }, 200);
+      };
+      return null;
+    }
+
+    // Utiliser QRCode.js correctement
+    var div = document.createElement('div');
+    new QRCode(div, {
+      text: text,
+      width: 220,
+      height: 220,
+      colorDark: '#1C3A2E',
+      colorLight: '#FFFFFF',
+      correctLevel: QRCode.CorrectLevel.L
+    });
+
+    // Récupérer l'image générée
+    var img = div.querySelector('img') || div.querySelector('canvas');
+    if (img) {
+      var canvas = document.getElementById('qr-canvas');
+      var ctx = canvas.getContext('2d');
+      canvas.width = 220;
+      canvas.height = 220;
+      ctx.drawImage(img, 0, 0, 220, 220);
+      return true; // signifie "déjà dessiné"
+    }
+    return null;
+  } catch(e) {
+    return null;
   }
 }
 
@@ -6348,25 +7218,21 @@ function checkSyncParam() {
   try {
     const jsonStr = decodeURIComponent(escape(atob(syncData)));
     const imported = JSON.parse(jsonStr);
-
-    // Confirmer avant d'écraser
     const nbClientes = (imported.clients || []).length;
-    if (confirm('📥 Données de synchronisation détectées !\n\n' + nbClientes + ' cliente(s) trouvée(s).\n\nImporter ces données ? Tes données locales seront remplacées.')) {
-      // Préserver clé API et PIN locaux
+
+    if (confirm('📱 Synchronisation détectée !\n\n' + nbClientes + ' cliente(s) trouvée(s).\n\nImporter ces données ?')) {
       if (!imported.apiKey && DATA.apiKey) imported.apiKey = DATA.apiKey;
       if (!imported.pinDirection && DATA.pinDirection) imported.pinDirection = DATA.pinDirection;
       DATA = imported;
       saveData();
-      // Nettoyer l'URL
       window.history.replaceState({}, document.title, window.location.pathname);
-      showToast('✅ Synchronisation réussie — ' + nbClientes + ' cliente(s) importée(s)');
+      showToast('✅ Sync réussie — ' + nbClientes + ' cliente(s) importée(s)');
       renderDashboard();
     } else {
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   } catch(e) {
-    console.error('Sync error:', e);
-    showToast('❌ Erreur de synchronisation');
+    showToast('❌ Erreur de synchronisation — données invalides');
     window.history.replaceState({}, document.title, window.location.pathname);
   }
 }
@@ -7075,17 +7941,1470 @@ async function genererMessageConversion() {
   if (result) { document.getElementById('conv-msg-result-text').textContent = result; result_div.style.display = ''; showToast('Message généré !'); }
 }
 
+
+// ══════════════════════════════════════════
+// SUIVI PRO
+// ══════════════════════════════════════════
+if (!DATA.suiviPro) DATA.suiviPro = {};
+
+var spClientActif = null;
+var spTabActif = 'kpi';
+var spMarcheVal = '';
+var spEcartVal = '';
+
+function spInit() {
+  spPopulateSelect();
+}
+
+function spPopulateSelect() {
+  var sel = document.getElementById('sp-client-select');
+  if (!sel) return;
+  var clients = DATA.clients || [];
+  sel.innerHTML = '<option value="">— Sélectionner une cliente —</option>';
+  clients.forEach(function(c) {
+    sel.innerHTML += '<option value="' + c.id + '">' + (c.prenom || c.nom || 'Cliente') + '</option>';
+  });
+}
+
+function spLoadClient() {
+  var sel = document.getElementById('sp-client-select');
+  spClientActif = sel ? sel.value : null;
+  if (!spClientActif) { document.getElementById('sp-content').innerHTML = '<div class="empty-state"><div class="es-icon">📊</div><p>Sélectionne une cliente</p></div>'; return; }
+  if (!DATA.suiviPro[spClientActif]) DATA.suiviPro[spClientActif] = { journalier: [], hebdo: [], mensuel: [] };
+  spRenderTab(spTabActif);
+}
+
+function spSwitchTab(tab, btn) {
+  spTabActif = tab;
+  document.querySelectorAll('#sp-tabs .result-tab').forEach(function(b){ b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  spRenderTab(tab);
+}
+
+function spRenderTab(tab) {
+  var el = document.getElementById('sp-content');
+  if (!el) return;
+  if (!spClientActif) { el.innerHTML = '<div class="empty-state"><div class="es-icon">📊</div><p>Sélectionne une cliente</p></div>'; return; }
+  var sp = DATA.suiviPro[spClientActif] || { journalier: [], hebdo: [], mensuel: [] };
+  var client = (DATA.clients || []).find(function(c){ return c.id === spClientActif; }) || {};
+
+  if (tab === 'kpi') spRenderKPI(sp, client, el);
+  else if (tab === 'journalier') spRenderJournalier(sp, el);
+  else if (tab === 'hebdo') spRenderHebdo(sp, el);
+  else if (tab === 'mensuel') spRenderMensuel(sp, client, el);
+  else if (tab === 'profil') spRenderProfil(client, el);
+}
+
+function spRenderKPI(sp, client, el) {
+  var jours = sp.journalier || [];
+  var derniers7 = jours.slice(-7);
+  var scoreDiner = derniers7.filter(function(j){ return j.qualite === 'bon'; }).length;
+  var scoreMarche = derniers7.filter(function(j){ return j.marche === 'oui'; }).length;
+  var digestifOk = derniers7.filter(function(j){ return j.transit === 'normal'; }).length;
+  var score7j = derniers7.reduce(function(acc, j){
+    var s = 0;
+    if (j.qualite === 'bon') s += 2;
+    if (j.marche === 'oui') s += 2;
+    if (j.transit === 'normal') s += 1;
+    return acc + s;
+  }, 0);
+  var maxScore = derniers7.length * 5;
+
+  // Dernière pesée
+  var hebdos = sp.hebdo || [];
+  var derniereHebdo = hebdos.length ? hebdos[hebdos.length-1] : null;
+  var poidsInitial = client.poidsInitial || '—';
+  var poidsCourant = derniereHebdo ? derniereHebdo.poids : '—';
+  var diff = (poidsInitial !== '—' && poidsCourant !== '—') ? (parseFloat(poidsInitial) - parseFloat(poidsCourant)).toFixed(1) : null;
+
+  el.innerHTML =
+    '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px">'
+    + spKpiCard('🍽️', 'Score Dîner', scoreDiner + '/7', scoreDiner >= 5 ? 'var(--forest)' : scoreDiner >= 3 ? 'var(--orange)' : 'var(--rouge)', '7 derniers jours')
+    + spKpiCard('🚶', 'Score Marche', scoreMarche + '/7', scoreMarche >= 5 ? 'var(--forest)' : scoreMarche >= 3 ? 'var(--orange)' : 'var(--rouge)', '7 derniers jours')
+    + spKpiCard('🏥', 'Transit OK', digestifOk + '/7', digestifOk >= 5 ? 'var(--forest)' : 'var(--orange)', '7 derniers jours')
+    + spKpiCard('⭐', 'Score Global', (maxScore > 0 ? Math.round(score7j/maxScore*100) : 0) + '%', 'var(--clay)', 'Performance semaine')
+    + '</div>'
+    + '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px">'
+    + spKpiCard('⚖️', 'Poids initial', poidsInitial + ' kg', 'var(--muted)', 'Au démarrage')
+    + spKpiCard('📉', 'Poids actuel', poidsCourant + ' kg', 'var(--forest)', diff ? '-' + diff + ' kg perdus' : 'Pas encore mesuré')
+    + '</div>'
+    + (derniers7.length === 0 ? '<div class="empty-state"><div class="es-icon">📊</div><p>Aucun bilan enregistré encore</p></div>' : '')
+    + '<div class="card" style="margin-top:4px"><div class="card-title">📅 Derniers bilans</div>'
+    + (jours.length === 0 ? '<div style="color:var(--muted);font-size:13px">Aucun bilan journalier</div>' :
+      jours.slice(-5).reverse().map(function(j){
+        var s = 0;
+        if (j.qualite === 'bon') s += 2;
+        if (j.marche === 'oui') s += 2;
+        if (j.transit === 'normal') s += 1;
+        var couleur = s >= 4 ? 'var(--forest)' : s >= 2 ? 'var(--orange)' : 'var(--rouge)';
+        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">'
+          + '<div style="font-size:13px">' + (j.date || '—') + ' — ' + (j.diner || 'Dîner non renseigné') + '</div>'
+          + '<div style="font-weight:700;color:' + couleur + ';font-size:14px">' + s + '/5</div>'
+          + '</div>';
+      }).join(''))
+    + '</div>';
+}
+
+function spKpiCard(icon, titre, valeur, couleur, sous) {
+  return '<div class="card" style="text-align:center;padding:16px">'
+    + '<div style="font-size:24px;margin-bottom:6px">' + icon + '</div>'
+    + '<div style="font-size:11px;color:var(--muted);margin-bottom:4px">' + titre + '</div>'
+    + '<div style="font-size:26px;font-weight:700;color:' + couleur + ';font-family:Cormorant Garamond,serif">' + valeur + '</div>'
+    + '<div style="font-size:10px;color:var(--muted);margin-top:4px">' + sous + '</div>'
+    + '</div>';
+}
+
+function spRenderJournalier(sp, el) {
+  var jours = (sp.journalier || []).slice().reverse();
+  if (!jours.length) { el.innerHTML = '<div class="empty-state"><div class="es-icon">📅</div><p>Aucun bilan journalier<br><small>Clique sur "+ Bilan du jour"</small></p></div>'; return; }
+  el.innerHTML = '<div style="display:flex;flex-direction:column;gap:10px">'
+    + jours.map(function(j, i) {
+      var score = 0;
+      if (j.qualite === 'bon') score += 2;
+      if (j.marche === 'oui') score += 2;
+      if (j.transit === 'normal') score += 1;
+      var couleur = score >= 4 ? 'var(--forest)' : score >= 2 ? 'var(--orange)' : 'var(--rouge)';
+      return '<div class="card" style="border-left:4px solid ' + couleur + '">'
+        + '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">'
+        + '<div style="font-weight:600;font-size:14px">' + (j.date || '—') + '</div>'
+        + '<div style="display:flex;align-items:center;gap:8px">'
+        + '<span style="font-size:18px;font-weight:700;color:' + couleur + '">' + score + '/5</span>'
+        + '<button onclick="spSupprimerJour(' + (jours.length-1-i) + ')" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:12px">🗑️</button>'
+        + '</div></div>'
+        + '<div style="display:flex;gap:8px;flex-wrap:wrap;font-size:12px">'
+        + '<span style="background:var(--cream-dark);padding:3px 10px;border-radius:10px">🍽️ ' + (j.qualite || '—') + ' · ' + (j.quantite || '—') + '</span>'
+        + '<span style="background:var(--cream-dark);padding:3px 10px;border-radius:10px">🚶 ' + (j.marche === 'oui' ? (j.marcheMin || '?') + ' min' : 'Non') + '</span>'
+        + '<span style="background:var(--cream-dark);padding:3px 10px;border-radius:10px">⚡ ' + (j.energie || '—') + '</span>'
+        + '<span style="background:var(--cream-dark);padding:3px 10px;border-radius:10px">🏥 ' + (j.transit || '—') + '</span>'
+        + '</div>'
+        + (j.diner ? '<div style="font-size:12px;color:var(--muted);margin-top:6px">🍽️ ' + j.diner + '</div>' : '')
+        + (j.ecartDesc ? '<div style="font-size:12px;color:var(--rouge);margin-top:4px">⚠️ ' + j.ecartDesc + '</div>' : '')
+        + '</div>';
+    }).join('') + '</div>';
+}
+
+function spRenderHebdo(sp, el) {
+  var hebdos = (sp.hebdo || []).slice().reverse();
+  if (!hebdos.length) { el.innerHTML = '<div class="empty-state"><div class="es-icon">📊</div><p>Aucun bilan hebdomadaire<br><small>Clique sur "+ Bilan semaine"</small></p></div>'; return; }
+  el.innerHTML = '<div style="display:flex;flex-direction:column;gap:12px">'
+    + hebdos.map(function(h, i) {
+      var scoreDiner = parseInt(h.diners || 0);
+      var scoreMarche = parseInt(h.marches || 0);
+      var couleurD = scoreDiner >= 5 ? 'var(--forest)' : scoreDiner >= 3 ? 'var(--orange)' : 'var(--rouge)';
+      var couleurM = scoreMarche >= 5 ? 'var(--forest)' : scoreMarche >= 3 ? 'var(--orange)' : 'var(--rouge)';
+      return '<div class="card">'
+        + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">'
+        + '<div style="font-weight:600;font-size:14px">' + (h.debut || '—') + ' → ' + (h.fin || '—') + '</div>'
+        + '<button onclick="spSupprimerHebdo(' + (hebdos.length-1-i) + ')" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:12px">🗑️</button>'
+        + '</div>'
+        + '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:10px">'
+        + '<div style="text-align:center;background:var(--cream-dark);padding:10px;border-radius:10px"><div style="font-size:10px;color:var(--muted)">Poids</div><div style="font-size:18px;font-weight:700;color:var(--clay)">' + (h.poids || '—') + ' kg</div></div>'
+        + '<div style="text-align:center;background:var(--cream-dark);padding:10px;border-radius:10px"><div style="font-size:10px;color:var(--muted)">Tour taille</div><div style="font-size:18px;font-weight:700;color:var(--clay)">' + (h.tour || '—') + ' cm</div></div>'
+        + '</div>'
+        + '<div style="display:flex;gap:8px;flex-wrap:wrap;font-size:12px;margin-bottom:8px">'
+        + '<span style="color:' + couleurD + ';font-weight:600">🍽️ ' + scoreDiner + '/7 dîners</span>'
+        + '<span style="color:' + couleurM + ';font-weight:600">🚶 ' + scoreMarche + '/7 marches</span>'
+        + '<span>🏥 ' + (h.digestif || '—') + '</span>'
+        + '</div>'
+        + (h.probleme ? '<div style="font-size:12px;color:var(--rouge);margin-bottom:4px">🔍 ' + h.probleme + '</div>' : '')
+        + (h.decision ? '<div style="font-size:12px;background:rgba(45,80,22,0.08);padding:8px;border-radius:8px;border-left:3px solid var(--forest)">📝 ' + h.decision + '</div>' : '')
+        + '</div>';
+    }).join('') + '</div>';
+}
+
+function spRenderMensuel(sp, client, el) {
+  var jours = sp.journalier || [];
+  var hebdos = sp.hebdo || [];
+  if (!jours.length && !hebdos.length) { el.innerHTML = '<div class="empty-state"><div class="es-icon">📈</div><p>Pas encore de données mensuelles</p></div>'; return; }
+
+  var poidsInitial = client.poidsInitial || null;
+  var dernierPoids = hebdos.length ? hebdos[hebdos.length-1].poids : null;
+  var diff = (poidsInitial && dernierPoids) ? (parseFloat(poidsInitial) - parseFloat(dernierPoids)).toFixed(1) : null;
+
+  var tauxDiner = jours.length ? Math.round(jours.filter(function(j){ return j.qualite === 'bon'; }).length / jours.length * 100) : 0;
+  var tauxMarche = jours.length ? Math.round(jours.filter(function(j){ return j.marche === 'oui'; }).length / jours.length * 100) : 0;
+
+  var evolution = diff ? (parseFloat(diff) > 0 ? 'Positive ✅' : parseFloat(diff) < 0 ? 'Régression ⚠️' : 'Stagnation 😐') : '—';
+
+  el.innerHTML =
+    '<div class="card" style="margin-bottom:16px">'
+    + '<div class="card-title">📈 Vision Mensuelle Globale</div>'
+    + '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px">'
+    + '<div style="background:var(--cream-dark);padding:12px;border-radius:10px;text-align:center"><div style="font-size:10px;color:var(--muted)">Poids initial</div><div style="font-size:20px;font-weight:700;color:var(--muted)">' + (poidsInitial || '—') + ' kg</div></div>'
+    + '<div style="background:var(--cream-dark);padding:12px;border-radius:10px;text-align:center"><div style="font-size:10px;color:var(--muted)">Poids actuel</div><div style="font-size:20px;font-weight:700;color:var(--forest)">' + (dernierPoids || '—') + ' kg</div></div>'
+    + '</div>'
+    + '<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:' + (diff && parseFloat(diff) > 0 ? 'rgba(45,80,22,0.08)' : 'rgba(196,98,45,0.08)') + ';border-radius:10px;margin-bottom:12px">'
+    + '<span style="font-weight:600">Évolution</span>'
+    + '<span style="font-weight:700;font-size:16px">' + evolution + (diff ? ' (' + diff + ' kg)' : '') + '</span>'
+    + '</div>'
+    + '<div style="margin-bottom:10px">'
+    + '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Taux dîners respectés</span><span style="font-weight:600">' + tauxDiner + '%</span></div>'
+    + '<div style="background:var(--sand);border-radius:10px;height:6px"><div style="width:' + tauxDiner + '%;height:100%;background:var(--forest);border-radius:10px"></div></div>'
+    + '</div>'
+    + '<div>'
+    + '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Taux marche effectuée</span><span style="font-weight:600">' + tauxMarche + '%</span></div>'
+    + '<div style="background:var(--sand);border-radius:10px;height:6px"><div style="width:' + tauxMarche + '%;height:100%;background:var(--clay);border-radius:10px"></div></div>'
+    + '</div>'
+    + '</div>'
+    + '<div class="card">'
+    + '<div class="card-title">📝 Plan ajustement</div>'
+    + '<textarea class="form-textarea" id="sp-plan-ajust" style="min-height:80px" placeholder="Note ici le plan ajustement mois prochain..." onchange="spSavePlanAjust()">' + (sp.planAjust || '') + '</textarea>'
+    + '<button class="btn btn-primary btn-sm" style="margin-top:8px;width:100%" onclick="spSavePlanAjust()">💾 Sauvegarder</button>'
+    + '</div>';
+}
+
+function spRenderProfil(client, el) {
+  el.innerHTML =
+    '<div class="card">'
+    + '<div class="card-title">👤 Profil Cliente</div>'
+    + '<div style="display:flex;flex-direction:column;gap:12px">'
+    + spProfilField('Nom', client.prenom || client.nom || '—')
+    + spProfilField('Ville', client.ville || '—')
+    + '</div>'
+    + '</div>'
+    + '<div class="card" style="margin-top:12px">'
+    + '<div class="card-title">📋 Données de base (suivi)</div>'
+    + '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px">'
+    + spProfilInput('Poids initial (kg)', 'sp-poids-initial', client.poidsInitial, 'number')
+    + spProfilInput('Objectif poids (kg)', 'sp-poids-objectif', client.poidsObjectif, 'number')
+    + spProfilInput('Tour taille initial (cm)', 'sp-tour-initial', client.tourInitial, 'number')
+    + spProfilInput('Délai objectif', 'sp-delai', client.delai, 'text')
+    + '</div>'
+    + '<button class="btn btn-primary btn-sm" style="margin-top:12px;width:100%" onclick="spSauvegarderProfil()">💾 Sauvegarder le profil</button>'
+    + '</div>';
+}
+
+function spProfilField(label, val) {
+  return '<div><div style="font-size:11px;color:var(--muted)">' + label + '</div><div style="font-size:14px;font-weight:500">' + val + '</div></div>';
+}
+
+function spProfilInput(label, id, val, type) {
+  return '<div class="form-group"><label class="form-label">' + label + '</label><input class="form-input" type="' + type + '" id="' + id + '" value="' + (val || '') + '" placeholder="—"></div>';
+}
+
+var spQualite = '';
+var spQuantite = '';
+var spTransit = '';
+var spBal = '';
+var spEnergie = '';
+
+function spResetChips() {
+  ['sp-q-bon','sp-q-moyen','sp-q-mauvais','sp-qt-leger','sp-qt-normal','sp-qt-lourd',
+   'sp-marche-oui','sp-marche-non','sp-ecart-oui','sp-ecart-non',
+   'sp-tr-normal','sp-tr-difficile','sp-tr-non','sp-bal-non','sp-bal-oui',
+   'sp-en-bonne','sp-en-moyenne','sp-en-faible'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.className = el.className.replace(/\s*(active|active-clay)/g, '');
+  });
+  spQualite = ''; spQuantite = ''; spTransit = ''; spBal = ''; spEnergie = '';
+  spMarcheVal = ''; spEcartVal = '';
+}
+
+function spSelectQ(val) {
+  spQualite = val;
+  ['bon','moyen','mauvais'].forEach(function(v) {
+    var el = document.getElementById('sp-q-' + v);
+    if (el) el.className = 'sp-chip' + (v === val ? ' active' : '');
+  });
+  spUpdateScore();
+}
+
+function spSelectQt(val) {
+  spQuantite = val;
+  ['leger','normal','lourd'].forEach(function(v) {
+    var el = document.getElementById('sp-qt-' + v);
+    if (el) el.className = 'sp-chip' + (v === val ? ' active' : '');
+  });
+}
+
+function spSelectTransit(val) {
+  spTransit = val;
+  ['normal','difficile','non'].forEach(function(v) {
+    var el = document.getElementById('sp-tr-' + v);
+    if (el) el.className = 'sp-chip sp-chip-sm' + (v === val ? ' active' : '');
+  });
+  spUpdateScore();
+}
+
+function spSelectBal(val) {
+  spBal = val;
+  ['non','oui'].forEach(function(v) {
+    var el = document.getElementById('sp-bal-' + v);
+    if (el) el.className = 'sp-chip sp-chip-sm' + (v === val ? ' active' : '');
+  });
+}
+
+function spSelectEnergie(val) {
+  spEnergie = val;
+  ['bonne','moyenne','faible'].forEach(function(v) {
+    var el = document.getElementById('sp-en-' + v);
+    if (el) el.className = 'sp-chip' + (v === val ? ' active' : '');
+  });
+}
+
+function spUpdateScore() {
+  var s = 0;
+  if (spQualite === 'bon') s += 2;
+  if (spMarcheVal === 'oui') s += 2;
+  if (spTransit === 'normal') s += 1;
+  var bar = document.getElementById('sp-score-bar');
+  var live = document.getElementById('sp-score-live');
+  if (bar) bar.style.width = (s/5*100) + '%';
+  if (bar) bar.style.background = s >= 4 ? '#4CAF50' : s >= 2 ? '#FF9800' : '#f44336';
+  if (live) live.innerHTML = s + '<span style="font-size:11px;opacity:0.7">/5</span>';
+}
+
+function spNouveauJour() {
+  if (!spClientActif) { alert('Sélectionne une cliente.'); return; }
+  spResetChips();
+  document.getElementById('sp-jour-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('sp-jour-diner').value = '';
+  document.getElementById('sp-jour-note').value = '';
+  document.getElementById('sp-marche-details').style.display = 'none';
+  document.getElementById('sp-ecart-desc').style.display = 'none';
+  document.getElementById('sp-marche-km').value = '';
+  document.getElementById('sp-marche-min').value = '';
+  document.getElementById('sp-ecart-desc').value = '';
+  spUpdateScore();
+  document.getElementById('sp-modal-jour').style.display = 'block';
+}
+
+function spNouvelleHebdo() {
+  if (!spClientActif) { alert('Sélectionne une cliente.'); return; }
+  var today = new Date();
+  var lundi = new Date(today);
+  lundi.setDate(today.getDate() - today.getDay() + 1);
+  var dimanche = new Date(lundi);
+  dimanche.setDate(lundi.getDate() + 6);
+  document.getElementById('sp-hebdo-debut').value = lundi.toISOString().split('T')[0];
+  document.getElementById('sp-hebdo-fin').value = dimanche.toISOString().split('T')[0];
+  document.getElementById('sp-modal-hebdo').style.display = 'block';
+}
+
+function spCloseModal(id) {
+  document.getElementById(id).style.display = 'none';
+}
+
+function spToggleMarche(val) {
+  spMarcheVal = val;
+  document.getElementById('sp-marche-oui').className = 'sp-chip' + (val === 'oui' ? ' active' : '');
+  document.getElementById('sp-marche-non').className = 'sp-chip' + (val === 'non' ? ' active-clay' : '');
+  document.getElementById('sp-marche-details').style.display = val === 'oui' ? 'flex' : 'none';
+  spUpdateScore();
+}
+
+function spToggleEcart(val) {
+  spEcartVal = val;
+  document.getElementById('sp-ecart-oui').className = 'sp-chip' + (val === 'oui' ? ' active-clay' : '');
+  document.getElementById('sp-ecart-non').className = 'sp-chip' + (val === 'non' ? ' active' : '');
+  document.getElementById('sp-ecart-desc').style.display = val === 'oui' ? 'block' : 'none';
+}
+
+function spSauvegarderJour() {
+  if (!DATA.suiviPro[spClientActif]) DATA.suiviPro[spClientActif] = { journalier: [], hebdo: [], mensuel: [] };
+  var score = 0;
+  if (spQualite === 'bon') score += 2;
+  if (spMarcheVal === 'oui') score += 2;
+  if (spTransit === 'normal') score += 1;
+  var bilan = {
+    date: document.getElementById('sp-jour-date').value,
+    diner: document.getElementById('sp-jour-diner').value.trim(),
+    qualite: spQualite,
+    quantite: spQuantite,
+    marche: spMarcheVal,
+    marcheKm: document.getElementById('sp-marche-km').value,
+    marcheMin: document.getElementById('sp-marche-min').value,
+    transit: spTransit,
+    ballonnements: spBal,
+    energie: spEnergie,
+    ecart: spEcartVal,
+    ecartDesc: document.getElementById('sp-ecart-desc').value.trim(),
+    note: document.getElementById('sp-jour-note').value.trim(),
+    score: score
+  };
+  DATA.suiviPro[spClientActif].journalier.push(bilan);
+  saveData();
+  spCloseModal('sp-modal-jour');
+  spRenderTab(spTabActif);
+  showToast('Bilan journalier sauvegardé !');
+}
+
+function spSauvegarderHebdo() {
+  if (!DATA.suiviPro[spClientActif]) DATA.suiviPro[spClientActif] = { journalier: [], hebdo: [], mensuel: [] };
+  var bilan = {
+    debut: document.getElementById('sp-hebdo-debut').value,
+    fin: document.getElementById('sp-hebdo-fin').value,
+    poids: document.getElementById('sp-hebdo-poids').value,
+    tour: document.getElementById('sp-hebdo-tour').value,
+    diners: document.getElementById('sp-hebdo-diners').value,
+    marches: document.getElementById('sp-hebdo-marches').value,
+    digestif: document.getElementById('sp-hebdo-digestif').value,
+    probleme: document.getElementById('sp-hebdo-probleme').value.trim(),
+    decision: document.getElementById('sp-hebdo-decision').value.trim()
+  };
+  DATA.suiviPro[spClientActif].hebdo.push(bilan);
+  saveData();
+  spCloseModal('sp-modal-hebdo');
+  spRenderTab(spTabActif);
+  showToast('Bilan hebdomadaire sauvegardé !');
+}
+
+function spSupprimerJour(idx) {
+  if (!confirm('Supprimer ce bilan ?')) return;
+  DATA.suiviPro[spClientActif].journalier.splice(idx, 1);
+  saveData();
+  spRenderTab('journalier');
+}
+
+function spSupprimerHebdo(idx) {
+  if (!confirm('Supprimer ce bilan ?')) return;
+  DATA.suiviPro[spClientActif].hebdo.splice(idx, 1);
+  saveData();
+  spRenderTab('hebdo');
+}
+
+function spSauvegarderProfil() {
+  var client = (DATA.clients || []).find(function(c){ return c.id === spClientActif; });
+  if (!client) return;
+  client.poidsInitial = document.getElementById('sp-poids-initial').value;
+  client.poidsObjectif = document.getElementById('sp-poids-objectif').value;
+  client.tourInitial = document.getElementById('sp-tour-initial').value;
+  client.delai = document.getElementById('sp-delai').value;
+  const marcheModeEl = document.getElementById('sp-marche-mode');
+  if (marcheModeEl) c.marcheMode = marcheModeEl.value;
+  saveData();
+  showToast('Profil mis à jour !');
+}
+
+function spSavePlanAjust() {
+  var val = document.getElementById('sp-plan-ajust');
+  if (!val || !spClientActif) return;
+  DATA.suiviPro[spClientActif].planAjust = val.value;
+  saveData();
+  showToast('Plan sauvegardé !');
+}
+
 updateRoleBadge();
 updateBackupStatus();
 startBackupReminder();
 startAlerteEngine();
 initConversion();
+spInit();
 document.getElementById('dash-date').textContent = new Date().toLocaleDateString('fr-FR', {
   weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
 });
 updateApiStatus();
 
 // ── PATCH: Update topbar title on page change ──
+
+// ══════════════════════════════════════════
+// MODULE — SUIVI PHYSIQUE & SCORE (v2)
+// ══════════════════════════════════════════
+
+function sp2PopulateSelect() {
+  const sel = document.getElementById('sp2-client');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">— Sélectionner une cliente —</option>';
+  (DATA.clients||[]).forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.id;
+    opt.textContent = (c.prenom||'') + ' ' + (c.nom||'');
+    sel.appendChild(opt);
+  });
+}
+
+
+// ── sp2NavTab : navigation onglets sans cliente ──
+let _sp2CurrentNav = 'baseline';
+function sp2NavTab(tab, btn) {
+  _sp2CurrentNav = tab;
+  document.querySelectorAll('.sp2-nav').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  
+  const id = document.getElementById('sp2-client') ? document.getElementById('sp2-client').value : '';
+  const noMsg = document.getElementById('sp2-no-client-msg');
+  const content = document.getElementById('sp2-content');
+  
+  if (!id) {
+    // Show preview of empty tab
+    if (noMsg) noMsg.style.display = 'block';
+    if (content) {
+      const c = { id: '__preview__', sp2: { baseline:{}, mesures:[], quotidien:[] }, challengeStart: null };
+      if (tab === 'baseline') content.innerHTML = sp2RenderTabBaseline(c);
+      else if (tab === 'quotidien') content.innerHTML = sp2RenderTabQuotidien(c);
+      else if (tab === 'mesures') content.innerHTML = sp2RenderTabMesures(c);
+      else if (tab === 'score') content.innerHTML = sp2RenderTabScore(c);
+    }
+    return;
+  }
+  
+  if (noMsg) noMsg.style.display = 'none';
+  const c = DATA.clients.find(x => x.id === id);
+  if (!c) return;
+  if (!c.sp2) c.sp2 = { baseline:{}, mesures:[], quotidien:[] };
+  const el = document.getElementById('sp2-content');
+  if (!el) return;
+  if (tab === 'baseline') el.innerHTML = sp2RenderTabBaseline(c);
+  else if (tab === 'quotidien') el.innerHTML = sp2RenderTabQuotidien(c);
+  else if (tab === 'mesures') el.innerHTML = sp2RenderTabMesures(c);
+  else if (tab === 'score') el.innerHTML = sp2RenderTabScore(c);
+}
+
+function sp2Init() {
+  const id = document.getElementById('sp2-client').value;
+  const noMsg = document.getElementById('sp2-no-client-msg');
+  const el = document.getElementById('sp2-content');
+  if (!el) return;
+  if (!id) { 
+    sp2NavTab(_sp2CurrentNav, null);
+    return; 
+  }
+  if (noMsg) noMsg.style.display = 'none';
+  const c = DATA.clients.find(x => x.id === id);
+  if (!c) return;
+  if (!c.sp2) c.sp2 = { baseline: {}, mesures: [], quotidien: [], gainage: false };
+  sp2NavTab(_sp2CurrentNav, document.querySelector('.sp2-nav[data-sp2nav="' + _sp2CurrentNav + '"]'));
+}
+
+function sp2Render(c, el) {
+  const sp2 = c.sp2 || { baseline: {}, mesures: [], quotidien: [], gainage: false };
+  const today = new Date().toISOString().split('T')[0];
+  
+  // Compute weekly score
+  const score = sp2ComputeScore(sp2);
+  
+  let html = '';
+  
+  // ── TOP STATS ROW ──
+  html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:24px">';
+  
+  // Score card
+  const scoreColor = score.total >= 10 ? '#0D7A4E' : score.total >= 7 ? '#D97706' : score.total >= 4 ? '#B45309' : '#C0392B';
+  const scoreLabel = score.total >= 10 ? '⭐ Championne' : score.total >= 7 ? '🔄 En progression' : score.total >= 4 ? '⚠️ À relancer' : '🚨 À contacter';
+  html += '<div class="card" style="text-align:center;border-top:3px solid ' + scoreColor + '">';
+  html += '<div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Score semaine</div>';
+  html += '<div style="font-size:36px;font-weight:700;color:' + scoreColor + ';font-family:\'Cormorant Garamond\',serif">' + score.total + '/12</div>';
+  html += '<div style="font-size:12px;color:' + scoreColor + ';font-weight:600;margin-top:2px">' + scoreLabel + '</div>';
+  html += '</div>';
+  
+  // Poids actuel
+  const mesures = sp2.mesures || [];
+  const dernierPoids = mesures.filter(mx => mx.poids).slice(-1)[0];
+  const baseline = sp2.baseline || {};
+  const poidsPerdu = (baseline.poids && dernierPoids) ? (baseline.poids - dernierPoids.poids).toFixed(1) : null;
+  html += '<div class="card" style="text-align:center">';
+  html += '<div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Poids actuel</div>';
+  html += '<div style="font-size:28px;font-weight:700;color:var(--forest);font-family:\'Cormorant Garamond\',serif">' + (dernierPoids ? dernierPoids.poids + ' kg' : baseline.poids ? baseline.poids + ' kg' : '—') + '</div>';
+  if (poidsPerdu > 0) html += '<div style="font-size:12px;color:#0D7A4E;font-weight:600">−' + poidsPerdu + ' kg perdus 🎉</div>';
+  else if (baseline.poids) html += '<div style="font-size:11px;color:var(--muted)">Baseline : ' + baseline.poids + ' kg</div>';
+  html += '</div>';
+  
+  // Tour de taille
+  const dernierTaille = mesures.filter(mx => mx.taille).slice(-1)[0];
+  const taillePerdu = (baseline.taille && dernierTaille) ? (baseline.taille - dernierTaille.taille).toFixed(1) : null;
+  html += '<div class="card" style="text-align:center">';
+  html += '<div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Tour de taille</div>';
+  html += '<div style="font-size:28px;font-weight:700;color:var(--forest);font-family:\'Cormorant Garamond\',serif">' + (dernierTaille ? dernierTaille.taille + ' cm' : baseline.taille ? baseline.taille + ' cm' : '—') + '</div>';
+  if (taillePerdu > 0) html += '<div style="font-size:12px;color:#0D7A4E;font-weight:600">−' + taillePerdu + ' cm 🎉</div>';
+  else if (baseline.taille) html += '<div style="font-size:11px;color:var(--muted)">Baseline : ' + baseline.taille + ' cm</div>';
+  html += '</div>';
+  
+  // Dîners semaine
+  html += '<div class="card" style="text-align:center">';
+  html += '<div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Dîners / 7j</div>';
+  html += '<div style="font-size:28px;font-weight:700;color:var(--clay);font-family:\'Cormorant Garamond\',serif">' + score.diners + '/7</div>';
+  const dPct = Math.round(score.diners/7*100);
+  html += '<div class="progress-bar" style="margin-top:6px"><div class="progress-fill" style="width:' + dPct + '%;background:var(--clay)"></div></div>';
+  html += '</div>';
+  
+  html += '</div>'; // end stats row
+  
+  // Tabs handled by sp2NavTab - just mark end of stats
+  
+}
+
+function sp2SwitchTab(id, tab, btn) {
+  // Delegated to sp2NavTab
+  sp2NavTab(tab, btn);
+}
+
+function sp2RenderTabBaseline(c) {
+  const b = (c.sp2 || {}).baseline || {};
+  let html = '<div class="card" style="max-width:600px">';
+  html += '<h3 style="font-size:15px;margin-bottom:16px">🏁 Baseline — Mesures initiales (Jour 1)</h3>';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
+  html += '<div class="form-group"><label class="form-label">⚖️ Poids initial (kg)</label><input class="form-input" type="number" step="0.1" id="sp2-base-poids" value="' + (b.poids||'') + '" placeholder="ex: 75.5"></div>';
+  html += '<div class="form-group"><label class="form-label">📏 Tour de taille initial (cm)</label><input class="form-input" type="number" step="0.5" id="sp2-base-taille" value="' + (b.taille||'') + '" placeholder="ex: 88"></div>';
+  html += '<div class="form-group"><label class="form-label">💬 Ressenti initial (1=très mal, 5=excellent)</label>';
+  html += '<select class="form-select" id="sp2-base-ressenti">';
+  [1,2,3,4,5].forEach(v => { html += '<option value="' + v + '"' + (b.ressenti==v?' selected':'') + '>' + v + '/5</option>'; });
+  html += '</select></div>';
+  html += '<div class="form-group"><label class="form-label">🎯 Objectif déclaré</label><input class="form-input" type="text" id="sp2-base-objectif" value="' + (b.objectif||'') + '" placeholder="ex: Perdre 5 kg en 28 jours"></div>';
+  html += '</div>';
+  html += '<div class="form-group" style="margin-top:8px"><label class="form-label">📸 Photo baseline</label>';
+  html += '<select class="form-select" id="sp2-base-photo"><option value="non"' + (b.photo==='non'?' selected':'') + '>Non prise</option><option value="oui"' + (b.photo==='oui'?' selected':'') + '>✅ Prise</option></select></div>';
+  html += '<button class="btn btn-vert" onclick="sp2SaveBaseline(\'' + c.id + '\')" style="margin-top:8px">💾 Enregistrer la baseline</button>';
+  html += '</div>';
+  return html;
+}
+
+function sp2RenderTabQuotidien(c) {
+  const today = new Date().toISOString().split('T')[0];
+  const existing = ((c.sp2||{}).quotidien||[]).find(q => q.date === today) || {};
+  const semaine = getSemaineChallenge(c);
+  
+  let html = '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">';
+  
+  // MATIN
+  html += '<div class="card">';
+  html += '<div style="font-size:13px;font-weight:700;color:var(--forest);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)">🌅 MATIN</div>';
+  if (semaine >= 1) {
+    html += '<div class="form-group"><label class="form-label">⚖️ Poids matin (si jour mesure)</label><input class="form-input sp2-q" data-key="poidsMatin" type="number" step="0.1" value="' + (existing.poidsMatin||'') + '" placeholder="facultatif"></div>';
+  }
+  html += '<div class="form-group"><label class="form-label">😴 Sommeil (1-5)</label>';
+  html += '<div style="display:flex;gap:4px">';
+  [1,2,3,4,5].forEach(v => { html += '<button class="sp2-btn-score' + (existing.sommeil==v?' selected':'') + '" onclick="sp2SetScore(this,' + v + ',\'sommeil\')">' + v + '</button>'; });
+  html += '</div></div>';
+  html += '<div class="form-group"><label class="form-label">⚡ Énergie (1-5)</label>';
+  html += '<div style="display:flex;gap:4px">';
+  [1,2,3,4,5].forEach(v => { html += '<button class="sp2-btn-score' + (existing.energie==v?' selected':'') + '" onclick="sp2SetScore(this,' + v + ',\'energie\')">' + v + '</button>'; });
+  html += '</div></div>';
+  html += '<div class="form-group"><label class="form-label">🌿 Digestion nuit (1-5)</label>';
+  html += '<div style="display:flex;gap:4px">';
+  [1,2,3,4,5].forEach(v => { html += '<button class="sp2-btn-score' + (existing.digestion==v?' selected':'') + '" onclick="sp2SetScore(this,' + v + ',\'digestion\')">' + v + '</button>'; });
+  html += '</div></div>';
+  html += '</div>';
+  
+  // JOURNÉE
+  html += '<div class="card">';
+  html += '<div style="font-size:13px;font-weight:700;color:var(--clay);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)">☀️ JOURNÉE</div>';
+  if (semaine >= 3) {
+    html += '<div class="form-group"><label class="form-label">🚶 Marche effectuée</label>';
+    html += '<div style="display:flex;gap:6px;align-items:center">';
+    html += '<button class="sp2-toggle' + (existing.marche?' active':'') + '" onclick="sp2Toggle(this,\'marche\')" id="sp2-marche-btn">Oui ✓</button>';
+    html += '<input class="form-input sp2-q" data-key="marcheDuree" type="number" style="max-width:80px" value="' + (existing.marcheDuree||'') + '" placeholder="min"></div></div>';
+  } else {
+    html += '<div style="background:var(--sand);border-radius:8px;padding:10px;font-size:12px;color:var(--muted)">🚶 Marche activée en Semaine 3</div>';
+  }
+  html += '<div class="form-group"><label class="form-label">💧 Hydratation</label>';
+  html += '<select class="form-select sp2-q" data-key="hydratation">';
+  [['', '—'], ['faible', '⚠️ Faible'], ['ok', '✅ Correcte'], ['bonne', '💧 Bonne']].forEach(([v,l]) => {
+    html += '<option value="' + v + '"' + (existing.hydratation===v?' selected':'') + '>' + l + '</option>';
+  });
+  html += '</select></div>';
+  html += '<div class="form-group"><label class="form-label">🍬 Grignotage</label>';
+  html += '<div style="display:flex;gap:6px">';
+  html += '<button class="sp2-toggle' + (existing.grignotage===false?' active':'') + '" onclick="sp2ToggleNo(this,\'grignotage\')">Non ✓</button>';
+  html += '<button class="sp2-toggle' + (existing.grignotage===true?' active-red':'') + '" onclick="sp2ToggleYes(this,\'grignotage\')">Oui</button>';
+  html += '</div></div>';
+  html += '</div>';
+  
+  // SOIR
+  html += '<div class="card">';
+  html += '<div style="font-size:13px;font-weight:700;color:#1D4ED8;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)">🌙 SOIR</div>';
+  html += '<div class="form-group"><label class="form-label" style="font-weight:700;color:var(--forest)">🍽️ Dîner respecté</label>';
+  html += '<div style="display:flex;gap:6px">';
+  html += '<button class="sp2-toggle' + (existing.dinerOk===true?' active':'') + '" onclick="sp2ToggleYes(this,\'dinerOk\')">Oui ✓</button>';
+  html += '<button class="sp2-toggle' + (existing.dinerOk===false?' active-red':'') + '" onclick="sp2ToggleNo(this,\'dinerOk\')">Non</button>';
+  html += '</div></div>';
+  if (semaine >= 4) {
+    html += '<div class="form-group"><label class="form-label">💪 Gainage fait</label>';
+    html += '<div style="display:flex;gap:6px;align-items:center">';
+    html += '<button class="sp2-toggle' + (existing.gainage?' active':'') + '" onclick="sp2Toggle(this,\'gainage\')">Oui ✓</button>';
+    html += '<input class="form-input sp2-q" data-key="gainageDuree" type="number" style="max-width:70px" value="' + (existing.gainageDuree||'') + '" placeholder="sec"></div></div>';
+  } else {
+    html += '<div style="background:var(--sand);border-radius:8px;padding:10px;font-size:12px;color:var(--muted)">💪 Gainage activé en Semaine 4</div>';
+  }
+  html += '<div class="form-group"><label class="form-label">📊 Ressenti corps (1-5)</label>';
+  html += '<div style="display:flex;gap:4px">';
+  [1,2,3,4,5].forEach(v => { html += '<button class="sp2-btn-score' + (existing.corpsRessenti==v?' selected':'') + '" onclick="sp2SetScore(this,' + v + ',\'corpsRessenti\')">' + v + '</button>'; });
+  html += '</div></div>';
+  html += '<div class="form-group"><label class="form-label">📝 Note du jour</label><input class="form-input sp2-q" data-key="note" type="text" value="' + (existing.note||'') + '" placeholder="Observation..."></div>';
+  html += '</div>';
+  
+  html += '</div>'; // grid
+  html += '<button class="btn btn-vert" onclick="sp2SaveQuotidien(\'' + c.id + '\')" style="margin-top:12px;min-width:200px">💾 Enregistrer le suivi du jour</button>';
+  
+  // Historique récent
+  const hist = ((c.sp2||{}).quotidien||[]).slice(-7).reverse();
+  if (hist.length > 0) {
+    html += '<div class="card" style="margin-top:20px">';
+    html += '<h4 style="font-size:14px;margin-bottom:12px">📋 7 derniers jours</h4>';
+    html += '<div style="overflow-x:auto"><table style="width:100%;font-size:12px;border-collapse:collapse">';
+    html += '<thead><tr style="background:var(--sand)">';
+    ['Date','🍽️','😴','⚡','🚶','💧','💪','📊'].forEach(h => {
+      html += '<th style="padding:6px 8px;text-align:center;font-weight:600">' + h + '</th>';
+    });
+    html += '</tr></thead><tbody>';
+    hist.forEach(q => {
+      const d = new Date(q.date).toLocaleDateString('fr-FR', {day:'2-digit',month:'2-digit'});
+      const diner = q.dinerOk === true ? '✅' : q.dinerOk === false ? '❌' : '—';
+      html += '<tr style="border-bottom:1px solid #E5E7EB;text-align:center">';
+      html += '<td style="padding:6px 8px;font-weight:600">' + d + '</td>';
+      html += '<td>' + diner + '</td>';
+      html += '<td>' + (q.sommeil||'—') + '</td>';
+      html += '<td>' + (q.energie||'—') + '</td>';
+      html += '<td>' + (q.marche ? '✅' : (q.marche===false?'❌':'—')) + '</td>';
+      html += '<td>' + (q.hydratation==='bonne'?'💧':q.hydratation==='ok'?'✅':q.hydratation==='faible'?'⚠️':'—') + '</td>';
+      html += '<td>' + (q.gainage ? '✅' : (q.gainage===false?'—':'—')) + '</td>';
+      html += '<td>' + (q.corpsRessenti||'—') + '</td>';
+      html += '</tr>';
+    });
+    html += '</tbody></table></div></div>';
+  }
+  
+  return html;
+}
+
+function sp2RenderTabMesures(c) {
+  const mesures = (c.sp2||{}).mesures || [];
+  let html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">';
+  
+  // Form
+  html += '<div class="card">';
+  html += '<h4 style="font-size:14px;margin-bottom:12px">➕ Nouvelle mesure hebdomadaire</h4>';
+  html += '<div class="form-group"><label class="form-label">📅 Semaine</label>';
+  html += '<select class="form-select" id="sp2-m-semaine">';
+  ['S1','S2','S3','S4'].forEach((s,i) => { html += '<option value="' + (i+1) + '">' + s + ' — Fin de semaine ' + (i+1) + '</option>'; });
+  html += '</select></div>';
+  html += '<div class="form-group"><label class="form-label">⚖️ Poids (kg)</label><input class="form-input" type="number" step="0.1" id="sp2-m-poids" placeholder="ex: 73.2"></div>';
+  html += '<div class="form-group"><label class="form-label">📏 Tour de taille (cm) — optionnel S2 et S4</label><input class="form-input" type="number" step="0.5" id="sp2-m-taille" placeholder="ex: 85.5"></div>';
+  html += '<div class="form-group"><label class="form-label">💬 Ressenti (1-5)</label>';
+  html += '<select class="form-select" id="sp2-m-ressenti">';
+  [1,2,3,4,5].forEach(v => html += '<option value="' + v + '">' + v + '/5</option>');
+  html += '</select></div>';
+  html += '<button class="btn btn-vert" onclick="sp2SaveMesure(\'' + c.id + '\')">💾 Enregistrer</button>';
+  html += '</div>';
+  
+  // History table
+  html += '<div class="card">';
+  html += '<h4 style="font-size:14px;margin-bottom:12px">📈 Évolution des mesures</h4>';
+  if (mesures.length === 0) {
+    html += '<div class="empty-state"><div class="es-icon">📊</div><p>Aucune mesure encore</p></div>';
+  } else {
+    const baseline = (c.sp2||{}).baseline || {};
+    html += '<table style="width:100%;font-size:12px;border-collapse:collapse">';
+    html += '<thead><tr style="background:var(--sand)"><th style="padding:8px;text-align:left">Semaine</th><th style="padding:8px;text-align:center">Poids</th><th style="padding:8px;text-align:center">Δ Poids</th><th style="padding:8px;text-align:center">Taille</th><th style="padding:8px;text-align:center">Δ Taille</th></tr></thead><tbody>';
+    
+    // Baseline row
+    if (baseline.poids) {
+      html += '<tr style="background:var(--beige-clair,#FFF8F0);font-weight:700"><td style="padding:7px 8px">🏁 Baseline</td><td style="text-align:center">' + baseline.poids + ' kg</td><td style="text-align:center">—</td><td style="text-align:center">' + (baseline.taille ? baseline.taille + ' cm' : '—') + '</td><td style="text-align:center">—</td></tr>';
+    }
+    
+    mesures.forEach((m, i) => {
+      const prevPoids = i === 0 ? baseline.poids : (mesures[i-1].poids || null);
+      const prevTaille = i === 0 ? baseline.taille : (mesures[i-1].taille || null);
+      const dpoids = (prevPoids && m.poids) ? (m.poids - prevPoids).toFixed(1) : null;
+      const dtaille = (prevTaille && m.taille) ? (m.taille - prevTaille).toFixed(1) : null;
+      html += '<tr style="border-bottom:1px solid #E5E7EB">';
+      html += '<td style="padding:7px 8px;font-weight:600">S' + m.semaine + '</td>';
+      html += '<td style="text-align:center">' + (m.poids ? m.poids + ' kg' : '—') + '</td>';
+      html += '<td style="text-align:center;color:' + (dpoids===null?'#666':dpoids<0?'#0D7A4E':'#C0392B') + ';font-weight:600">' + (dpoids===null?'—':(dpoids>0?'+':'')+dpoids+' kg') + '</td>';
+      html += '<td style="text-align:center">' + (m.taille ? m.taille + ' cm' : '—') + '</td>';
+      html += '<td style="text-align:center;color:' + (dtaille===null?'#666':dtaille<0?'#0D7A4E':'#C0392B') + ';font-weight:600">' + (dtaille===null?'—':(dtaille>0?'+':'')+dtaille+' cm') + '</td>';
+      html += '</tr>';
+    });
+    
+    // Total row
+    const lastMesure = mesures[mesures.length-1];
+    const totalPoids = (baseline.poids && lastMesure && lastMesure.poids) ? (baseline.poids - lastMesure.poids).toFixed(1) : null;
+    const totalTaille = (baseline.taille && lastMesure && lastMesure.taille) ? (baseline.taille - lastMesure.taille).toFixed(1) : null;
+    if (totalPoids || totalTaille) {
+      html += '<tr style="background:var(--forest);color:white;font-weight:700">';
+      html += '<td style="padding:7px 8px">TOTAL PERDU</td>';
+      html += '<td style="text-align:center" colspan="2">' + (totalPoids > 0 ? '−' + totalPoids + ' kg 🎉' : '—') + '</td>';
+      html += '<td style="text-align:center" colspan="2">' + (totalTaille > 0 ? '−' + totalTaille + ' cm 🎉' : '—') + '</td>';
+      html += '</tr>';
+    }
+    
+    html += '</tbody></table>';
+  }
+  html += '</div>';
+  html += '</div>';
+  return html;
+}
+
+function sp2RenderTabScore(c) {
+  const score = sp2ComputeScore(c.sp2 || {});
+  const scoreColor = score.total >= 10 ? '#0D7A4E' : score.total >= 7 ? '#D97706' : score.total >= 4 ? '#B45309' : '#C0392B';
+  const scoreLabel = score.total >= 10 ? '⭐ Championne — Documenter et demander témoignage !' : score.total >= 7 ? '🔄 En progression — Message d\'encouragement personnalisé' : score.total >= 4 ? '⚠️ À relancer — Identifier le blocage, WhatsApp direct' : '🚨 Urgence — Contact immédiat, risque d\'abandon';
+  const scoreAction = score.total >= 10 ? 'Demander un témoignage + proposer coaching 1:1' : score.total >= 7 ? 'Envoyer message de motivation + féliciter' : score.total >= 4 ? 'Appeler ou WhatsApp pour identifier le frein' : 'Contact immédiat — prévoir remplacement si silence';
+  
+  let html = '<div class="card" style="max-width:640px">';
+  html += '<div style="text-align:center;padding:20px 0">';
+  html += '<div style="font-size:60px;font-weight:700;color:' + scoreColor + ';font-family:\'Cormorant Garamond\',serif">' + score.total + '/12</div>';
+  html += '<div style="font-size:16px;font-weight:700;color:' + scoreColor + ';margin-top:4px">' + scoreLabel + '</div>';
+  html += '</div>';
+  
+  html += '<div style="display:grid;gap:10px;margin:16px 0">';
+  
+  // Dîner score
+  html += '<div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--beige-clair,#FFF8F0);border-radius:10px">';
+  html += '<div style="font-size:24px">🍽️</div><div style="flex:1"><div style="font-size:13px;font-weight:700">Dîners respectés</div><div style="font-size:12px;color:var(--muted)">Poids 50% — ' + score.diners + '/7 dîners cette semaine</div></div>';
+  html += '<div style="font-size:22px;font-weight:700;color:var(--forest)">' + score.scoreDiners + '/7 pts</div>';
+  html += '</div>';
+  
+  // Activité score
+  html += '<div style="display:flex;align-items:center;gap:12px;padding:12px;background:#E8F5E9;border-radius:10px">';
+  html += '<div style="font-size:24px">🏃</div><div style="flex:1"><div style="font-size:13px;font-weight:700">Activité physique</div><div style="font-size:12px;color:var(--muted)">Poids 30% — ' + score.marches + ' marches + ' + score.gainages + ' gainages</div></div>';
+  html += '<div style="font-size:22px;font-weight:700;color:#0D7A4E">' + score.scoreActivite + '/3 pts</div>';
+  html += '</div>';
+  
+  // Suivi score
+  html += '<div style="display:flex;align-items:center;gap:12px;padding:12px;background:#E3F2FD;border-radius:10px">';
+  html += '<div style="font-size:24px">📋</div><div style="flex:1"><div style="font-size:13px;font-weight:700">Suivi complété</div><div style="font-size:12px;color:var(--muted)">Poids 20% — ' + score.joursSuivis + '/7 jours remplis</div></div>';
+  html += '<div style="font-size:22px;font-weight:700;color:#1D4ED8">' + score.scoreSuivi + '/2 pts</div>';
+  html += '</div>';
+  
+  html += '</div>';
+  
+  // Action recommendation
+  html += '<div style="background:' + scoreColor + ';color:white;border-radius:10px;padding:14px 16px;margin-top:8px">';
+  html += '<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">ACTION RECOMMANDÉE</div>';
+  html += '<div style="font-size:14px">' + scoreAction + '</div>';
+  html += '</div>';
+  
+  html += '</div>';
+  return html;
+}
+
+function sp2ComputeScore(sp2) {
+  if (!sp2) return { total: 0, scoreDiners: 0, scoreActivite: 0, scoreSuivi: 0, diners: 0, marches: 0, gainages: 0, joursSuivis: 0 };
+  
+  const quotidien = sp2.quotidien || [];
+  // Get last 7 days
+  const now = new Date();
+  const last7 = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i);
+    last7.push(d.toISOString().split('T')[0]);
+  }
+  
+  let diners = 0, marches = 0, gainages = 0, joursSuivis = 0;
+  last7.forEach(date => {
+    const q = quotidien.find(x => x.date === date);
+    if (q) {
+      joursSuivis++;
+      if (q.dinerOk === true) diners++;
+      if (q.marche === true) marches++;
+      if (q.gainage === true) gainages++;
+    }
+  });
+  
+  const scoreDiners = diners;
+  const scoreActivite = Math.min(3, Math.round((marches + gainages) / 2));
+  const scoreSuivi = Math.min(2, Math.round(joursSuivis / 7 * 2));
+  const total = scoreDiners + scoreActivite + scoreSuivi;
+  
+  return { total, scoreDiners, scoreActivite, scoreSuivi, diners, marches, gainages, joursSuivis };
+}
+
+function getSemaineChallenge(c) {
+  if (!c.challengeStart) return 1;
+  const start = new Date(c.challengeStart);
+  const now = new Date();
+  const days = Math.floor((now - start) / (1000 * 60 * 60 * 24));
+  return Math.floor(days / 7) + 1;
+}
+
+function sp2SaveBaseline(id) {
+  const c = DATA.clients.find(x => x.id === id);
+  if (!c) return;
+  if (!c.sp2) c.sp2 = { baseline: {}, mesures: [], quotidien: [] };
+  c.sp2.baseline = {
+    poids: parseFloat(document.getElementById('sp2-base-poids').value) || null,
+    taille: parseFloat(document.getElementById('sp2-base-taille').value) || null,
+    ressenti: parseInt(document.getElementById('sp2-base-ressenti').value) || null,
+    objectif: document.getElementById('sp2-base-objectif').value.trim(),
+    photo: document.getElementById('sp2-base-photo').value,
+    date: new Date().toISOString()
+  };
+  saveData();
+  showToast('✅ Baseline enregistrée !');
+}
+
+let _sp2QData = {};
+
+function sp2SetScore(btn, val, key) {
+  const parent = btn.closest('.form-group');
+  parent.querySelectorAll('.sp2-btn-score').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  _sp2QData[key] = val;
+}
+
+function sp2Toggle(btn, key) {
+  btn.classList.toggle('active');
+  _sp2QData[key] = btn.classList.contains('active');
+}
+
+function sp2ToggleYes(btn, key) {
+  _sp2QData[key] = true;
+  const parent = btn.closest('.form-group') || btn.parentElement;
+  parent.querySelectorAll('.sp2-toggle').forEach(b => { b.classList.remove('active'); b.classList.remove('active-red'); });
+  btn.classList.add('active');
+}
+
+function sp2ToggleNo(btn, key) {
+  _sp2QData[key] = false;
+  const parent = btn.closest('.form-group') || btn.parentElement;
+  parent.querySelectorAll('.sp2-toggle').forEach(b => { b.classList.remove('active'); b.classList.remove('active-red'); });
+  btn.classList.add('active');
+}
+
+function sp2SaveQuotidien(id) {
+  const c = DATA.clients.find(x => x.id === id);
+  if (!c) return;
+  if (!c.sp2) c.sp2 = { baseline: {}, mesures: [], quotidien: [] };
+  if (!c.sp2.quotidien) c.sp2.quotidien = [];
+  
+  const today = new Date().toISOString().split('T')[0];
+  
+  // Collect text inputs
+  document.querySelectorAll('.sp2-q').forEach(input => {
+    const key = input.dataset.key;
+    if (key) {
+      const val = input.value;
+      if (val !== '') _sp2QData[key] = isNaN(val) ? val : parseFloat(val);
+    }
+  });
+  
+  _sp2QData.date = today;
+  
+  const idx = c.sp2.quotidien.findIndex(q => q.date === today);
+  if (idx >= 0) c.sp2.quotidien[idx] = Object.assign({}, c.sp2.quotidien[idx], _sp2QData);
+  else c.sp2.quotidien.push({ ..._sp2QData });
+  
+  _sp2QData = {};
+  saveData();
+  showToast('✅ Suivi du jour enregistré !');
+  sp2Init();
+}
+
+function sp2SaveMesure(id) {
+  const c = DATA.clients.find(x => x.id === id);
+  if (!c) return;
+  if (!c.sp2) c.sp2 = { baseline: {}, mesures: [], quotidien: [] };
+  if (!c.sp2.mesures) c.sp2.mesures = [];
+  
+  const semaine = parseInt(document.getElementById('sp2-m-semaine').value);
+  const poids = parseFloat(document.getElementById('sp2-m-poids').value) || null;
+  const taille = parseFloat(document.getElementById('sp2-m-taille').value) || null;
+  const ressenti = parseInt(document.getElementById('sp2-m-ressenti').value);
+  
+  const existing = c.sp2.mesures.findIndex(m => m.semaine === semaine);
+  const mesure = { semaine, poids, taille, ressenti, date: new Date().toISOString() };
+  
+  if (existing >= 0) c.sp2.mesures[existing] = mesure;
+  else {
+    c.sp2.mesures.push(mesure);
+    c.sp2.mesures.sort((a, b) => a.semaine - b.semaine);
+  }
+  
+  // Sync poids to main poids array too
+  if (poids) {
+    if (!c.poids) c.poids = [];
+    c.poids.push({ val: poids, date: new Date().toISOString() });
+    updateTotalKg();
+  }
+  
+  saveData();
+  showToast('✅ Mesure S' + semaine + ' enregistrée !');
+  sp2SwitchTab(id, 'mesures', document.querySelector('.sp2-tab[data-sp2tab="mesures"]') || { classList: { add: ()=>{}, remove: ()=>{} } });
+  sp2Init();
+}
+
+// Also handle mensurations tab in resultats
+function renderTabMensurations(c, el) {
+  // Initialize sp2 if not exists
+  if (!c.sp2) c.sp2 = { baseline: {}, mesures: [], quotidien: [] };
+  
+  const mesures = c.sp2.mesures || [];
+  const baseline = c.sp2.baseline || {};
+  
+  let html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">';
+  
+  // LEFT: Entry form
+  html += '<div class="card">';
+  html += '<h4 style="font-size:14px;margin-bottom:14px;color:var(--forest)">📏 Saisir une mesure</h4>';
+  
+  // Baseline indicator
+  if (baseline.poids || baseline.taille) {
+    html += '<div style="background:var(--cream-dark);border-radius:8px;padding:10px;margin-bottom:12px;font-size:12px">';
+    html += '<span style="font-weight:700;color:var(--forest)">Baseline J1 : </span>';
+    if (baseline.poids) html += '⚖️ ' + baseline.poids + ' kg ';
+    if (baseline.taille) html += '📏 ' + baseline.taille + ' cm';
+    html += '</div>';
+  } else {
+    html += '<div style="background:#FEF3C7;border-radius:8px;padding:10px;margin-bottom:12px;font-size:12px;color:#92400E">';
+    html += '⚠️ Aucune baseline — commence par enregistrer les mesures de départ (Semaine 0)';
+    html += '</div>';
+  }
+  
+  html += '<div class="form-group"><label class="form-label">Semaine du challenge</label>';
+  html += '<select class="form-select" id="res-mens-semaine">';
+  html += '<option value="0">🏁 Baseline — Jour 1 (début programme)</option>';
+  html += '<option value="1">S1 — Fin semaine 1</option>';
+  html += '<option value="2">S2 — Fin semaine 2</option>';
+  html += '<option value="3">S3 — Fin semaine 3</option>';
+  html += '<option value="4">S4 — Fin semaine 4 (J28 — final)</option>';
+  html += '</select></div>';
+  
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">';
+  html += '<div class="form-group"><label class="form-label">⚖️ Poids (kg)</label>';
+  html += '<input class="form-input" type="number" step="0.1" id="res-mens-poids" placeholder="ex: 72.5"></div>';
+  html += '<div class="form-group"><label class="form-label">📏 Tour de taille (cm)</label>';
+  html += '<input class="form-input" type="number" step="0.5" id="res-mens-taille" placeholder="ex: 85"></div>';
+  html += '</div>';
+  
+  html += '<div class="form-group"><label class="form-label">💬 Ressenti général</label>';
+  html += '<select class="form-select" id="res-mens-ressenti">';
+  [['3','😐 Moyen'],['4','😊 Bien'],['5','🌟 Excellent'],['2','😔 Difficile'],['1','😞 Très difficile']].forEach(([v,l]) => {
+    html += '<option value="' + v + '">' + l + '</option>';
+  });
+  html += '</select></div>';
+  
+  html += '<button class="btn btn-vert" style="width:100%" onclick="resMensSave(\'' + c.id + '\')">💾 Enregistrer</button>';
+  html += '<div id="res-mens-result" style="margin-top:10px"></div>';
+  html += '</div>';
+  
+  // RIGHT: Evolution table
+  html += '<div class="card">';
+  html += '<h4 style="font-size:14px;margin-bottom:14px;color:var(--forest)">📈 Évolution des mesures</h4>';
+  
+  if (mesures.length === 0 && !baseline.poids) {
+    html += '<div class="empty-state"><div class="es-icon">📊</div>';
+    html += '<p>Aucune mesure encore</p>';
+    html += '<p style="font-size:12px;margin-top:6px;color:var(--muted)">Saisis les premières mesures à gauche</p></div>';
+  } else {
+    html += '<div style="overflow-x:auto"><table style="width:100%;font-size:12px;border-collapse:collapse">';
+    html += '<thead><tr style="background:var(--sand)">';
+    ['Semaine','⚖️ Poids','Δ','📏 Taille','Δ','😊'].forEach(h => {
+      html += '<th style="padding:7px 8px;text-align:center;font-weight:600">' + h + '</th>';
+    });
+    html += '</tr></thead><tbody>';
+    
+    // Baseline row
+    if (baseline.poids || baseline.taille) {
+      html += '<tr style="background:#FFF8F0;font-weight:700">';
+      html += '<td style="padding:7px 8px;text-align:center">🏁 J1</td>';
+      html += '<td style="text-align:center">' + (baseline.poids ? baseline.poids + ' kg' : '—') + '</td>';
+      html += '<td style="text-align:center;color:var(--muted)">—</td>';
+      html += '<td style="text-align:center">' + (baseline.taille ? baseline.taille + ' cm' : '—') + '</td>';
+      html += '<td style="text-align:center;color:var(--muted)">—</td>';
+      html += '<td style="text-align:center">' + (baseline.ressenti ? baseline.ressenti + '/5' : '—') + '</td>';
+      html += '</tr>';
+    }
+    
+    mesures.forEach((m, i) => {
+      const prevP = i === 0 ? baseline.poids : (mesures[i-1].poids || null);
+      const prevT = i === 0 ? baseline.taille : (mesures[i-1].taille || null);
+      const dp = (prevP && m.poids) ? (m.poids - prevP).toFixed(1) : null;
+      const dt = (prevT && m.taille) ? (m.taille - prevT).toFixed(1) : null;
+      
+      html += '<tr style="border-bottom:1px solid #E5E7EB">';
+      html += '<td style="padding:7px 8px;text-align:center;font-weight:600">S' + m.semaine + '</td>';
+      html += '<td style="text-align:center">' + (m.poids ? m.poids + ' kg' : '—') + '</td>';
+      html += '<td style="text-align:center;font-weight:600;color:' + (dp===null?'#999':dp<0?'#0D7A4E':'#C0392B') + '">' + (dp===null?'—':(dp>0?'+':'')+dp+' kg') + '</td>';
+      html += '<td style="text-align:center">' + (m.taille ? m.taille + ' cm' : '—') + '</td>';
+      html += '<td style="text-align:center;font-weight:600;color:' + (dt===null?'#999':dt<0?'#0D7A4E':'#C0392B') + '">' + (dt===null?'—':(dt>0?'+':'')+dt+' cm') + '</td>';
+      html += '<td style="text-align:center">' + (m.ressenti ? m.ressenti + '/5' : '—') + '</td>';
+      html += '</tr>';
+    });
+    
+    // Total row if enough data
+    const lastM = mesures[mesures.length-1];
+    if (lastM && (baseline.poids || baseline.taille)) {
+      const totalP = (baseline.poids && lastM.poids) ? (baseline.poids - lastM.poids).toFixed(1) : null;
+      const totalT = (baseline.taille && lastM.taille) ? (baseline.taille - lastM.taille).toFixed(1) : null;
+      if (totalP > 0 || totalT > 0) {
+        html += '<tr style="background:var(--forest);color:white;font-weight:700">';
+        html += '<td style="padding:7px 8px;text-align:center">TOTAL</td>';
+        html += '<td colspan="2" style="text-align:center">' + (totalP > 0 ? '−' + totalP + ' kg 🎉' : '—') + '</td>';
+        html += '<td colspan="2" style="text-align:center">' + (totalT > 0 ? '−' + totalT + ' cm 🎉' : '—') + '</td>';
+        html += '<td></td></tr>';
+      }
+    }
+    
+    html += '</tbody></table></div>';
+  }
+  
+  // Delete last entry option
+  if (mesures.length > 0) {
+    html += '<div style="margin-top:12px;text-align:right">';
+    html += '<button class="btn btn-sm btn-danger" onclick="resMensDelete(\'' + c.id + '\',' + (mesures.length-1) + ')">🗑️ Supprimer dernière mesure</button>';
+    html += '</div>';
+  }
+  
+  html += '</div>';
+  html += '</div>';
+  
+  el.innerHTML = html;
+}
+
+function resMensSave(id) {
+  const c = DATA.clients.find(x => x.id === id);
+  if (!c) return;
+  if (!c.sp2) c.sp2 = { baseline: {}, mesures: [], quotidien: [] };
+  
+  const semaine = parseInt(document.getElementById('res-mens-semaine').value);
+  const poids = parseFloat(document.getElementById('res-mens-poids').value) || null;
+  const taille = parseFloat(document.getElementById('res-mens-taille').value) || null;
+  const ressenti = parseInt(document.getElementById('res-mens-ressenti').value) || 3;
+  const resultEl = document.getElementById('res-mens-result');
+  
+  if (!poids && !taille) {
+    if (resultEl) resultEl.innerHTML = '<div class="alert alert-rouge">Entre au moins le poids ou le tour de taille</div>';
+    return;
+  }
+  
+  if (semaine === 0) {
+    c.sp2.baseline = Object.assign(c.sp2.baseline || {}, { poids, taille, ressenti, date: new Date().toISOString() });
+    if (!c.poidsInit && poids) c.poidsInit = poids;
+    if (resultEl) resultEl.innerHTML = '<div class="alert alert-vert">✅ Baseline enregistrée !</div>';
+  } else {
+    const existing = c.sp2.mesures.findIndex(m => m.semaine === semaine);
+    const mesure = { semaine, poids, taille, ressenti, date: new Date().toISOString() };
+    if (existing >= 0) c.sp2.mesures[existing] = mesure;
+    else { c.sp2.mesures.push(mesure); c.sp2.mesures.sort((a,b) => a.semaine - b.semaine); }
+    if (poids) { if (!c.poids) c.poids = []; c.poids.push({ val: poids, date: new Date().toISOString() }); updateTotalKg(); }
+    if (resultEl) resultEl.innerHTML = '<div class="alert alert-vert">✅ Mesures S' + semaine + ' enregistrées — visibles dans Suivi Physique !</div>';
+  }
+  
+  saveData();
+  showToast('Mesures enregistrées !');
+  // Refresh the tab
+  setTimeout(() => renderResultClient(), 300);
+}
+
+function resMensDelete(id, idx) {
+  const c = DATA.clients.find(x => x.id === id);
+  if (!c || !c.sp2 || !c.sp2.mesures) return;
+  if (!confirm('Supprimer cette mesure ?')) return;
+  c.sp2.mesures.splice(idx, 1);
+  saveData();
+  renderResultClient();
+}
+
+// ── CSS for sp2 buttons ──
+(function() {
+  const style = document.createElement('style');
+  style.textContent = `
+    .sp2-btn-score {
+      flex: 1;
+      padding: 6px 2px;
+      border: 1.5px solid var(--border-strong);
+      border-radius: 8px;
+      background: white;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      transition: all 0.15s;
+    }
+    .sp2-btn-score.selected {
+      background: var(--forest);
+      color: white;
+      border-color: var(--forest);
+    }
+    .sp2-toggle {
+      padding: 7px 16px;
+      border: 1.5px solid var(--border-strong);
+      border-radius: 8px;
+      background: white;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      transition: all 0.15s;
+    }
+    .sp2-toggle.active {
+      background: var(--forest);
+      color: white;
+      border-color: var(--forest);
+    }
+    .sp2-toggle.active-red {
+      background: var(--rouge);
+      color: white;
+      border-color: var(--rouge);
+    }
+.msg-type-btn.active {
+  background: var(--forest);
+  color: white;
+  border-color: var(--forest);
+}
+
+  `;
+  document.head.appendChild(style);
+})();
+
+// ── Init sp2 populate on page load ──
+// sp2PopulateSelect called via onPageLoad
+
+
+
+// ══════════════════════════════════════════════════
+// CENTRE D'IMPORTATION — Fonctions
+// ══════════════════════════════════════════════════
+
+function switchImportTab(tab, btn) {
+  document.querySelectorAll('[data-import-tab]').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  ['adherent','suivi-matin','mesures','temoignage'].forEach(t => {
+    const el = document.getElementById('import-tab-' + t);
+    if (el) el.style.display = t === tab ? 'block' : 'none';
+  });
+  // Populate selects when switching to a tab
+  if (tab !== 'adherent') importPopulateSelects(tab);
+}
+
+function importPopulateSelects(tab) {
+  const selectIds = {
+    'suivi-matin': 'import-suivi-client',
+    'mesures': 'import-mesures-client',
+    'temoignage': 'import-temo-client'
+  };
+  const selId = selectIds[tab];
+  if (!selId) return;
+  const sel = document.getElementById(selId);
+  if (!sel) return;
+  sel.innerHTML = '<option value="">— Sélectionner —</option>';
+  (DATA.clients||[]).forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.id;
+    opt.textContent = (c.prenom||'') + ' ' + (c.nom||'');
+    sel.appendChild(opt);
+  });
+}
+
+function loadImportMesuresBaseline() {
+  const id = document.getElementById('import-mesures-client').value;
+  const el = document.getElementById('import-mesures-baseline');
+  const histEl = document.getElementById('import-mesures-history');
+  if (!el) return;
+  if (!id) { el.style.display = 'none'; return; }
+  const c = DATA.clients.find(x => x.id === id);
+  if (!c) return;
+  const b = (c.sp2 || {}).baseline || {};
+  if (b.poids || b.taille) {
+    el.style.display = 'block';
+    el.innerHTML = '<strong style="color:var(--forest)">Baseline enregistrée :</strong> ' +
+      (b.poids ? '⚖️ ' + b.poids + ' kg' : '') +
+      (b.taille ? ' — 📏 ' + b.taille + ' cm' : '') +
+      (b.objectif ? '<br>🎯 ' + b.objectif : '');
+  } else {
+    el.style.display = 'block';
+    el.innerHTML = '<span style="color:var(--muted)">⚠️ Aucune baseline. Si tu enregistres en Semaine 0, ce sera la baseline.</span>';
+  }
+  // Show history
+  if (histEl) {
+    const mesures = (c.sp2 || {}).mesures || [];
+    if (mesures.length === 0) {
+      histEl.innerHTML = '<div style="color:var(--muted)">Aucune mesure encore pour ' + (c.prenom||'cette cliente') + '</div>';
+    } else {
+      histEl.innerHTML = '<table style="width:100%;font-size:12px;border-collapse:collapse">' +
+        '<thead><tr style="background:var(--sand)"><th style="padding:6px 8px;text-align:left">Semaine</th><th>Poids</th><th>Taille</th></tr></thead><tbody>' +
+        mesures.map(m => '<tr style="border-bottom:1px solid #E5E7EB"><td style="padding:6px 8px">S' + m.semaine + '</td><td style="text-align:center">' + (m.poids ? m.poids + ' kg' : '—') + '</td><td style="text-align:center">' + (m.taille ? m.taille + ' cm' : '—') + '</td></tr>').join('') +
+        '</tbody></table>';
+    }
+  }
+}
+
+function importMesuresHebdo() {
+  const id = document.getElementById('import-mesures-client').value;
+  const semaine = parseInt(document.getElementById('import-mesures-semaine').value);
+  const poids = parseFloat(document.getElementById('import-mesures-poids').value) || null;
+  const taille = parseFloat(document.getElementById('import-mesures-taille').value) || null;
+  const ressenti = parseInt(document.getElementById('import-mesures-ressenti').value) || 3;
+  const resultEl = document.getElementById('import-mesures-result');
+  
+  if (!id) { if (resultEl) resultEl.innerHTML = '<div class="alert alert-rouge">Sélectionne une cliente</div>'; return; }
+  if (!poids && !taille) { if (resultEl) resultEl.innerHTML = '<div class="alert alert-rouge">Entre au moins le poids ou le tour de taille</div>'; return; }
+  
+  const c = DATA.clients.find(x => x.id === id);
+  if (!c) return;
+  if (!c.sp2) c.sp2 = { baseline: {}, mesures: [], quotidien: [] };
+  
+  if (semaine === 0) {
+    // Baseline
+    c.sp2.baseline = Object.assign(c.sp2.baseline || {}, { 
+      poids: poids || c.sp2.baseline.poids, 
+      taille: taille || c.sp2.baseline.taille, 
+      ressenti, 
+      date: new Date().toISOString() 
+    });
+    if (!c.poidsInit && poids) c.poidsInit = poids;
+    if (resultEl) resultEl.innerHTML = '<div class="alert alert-vert">✅ Baseline enregistrée pour ' + (c.prenom||'la cliente') + '</div>';
+  } else {
+    const existing = c.sp2.mesures.findIndex(m => m.semaine === semaine);
+    const mesure = { semaine, poids, taille, ressenti, date: new Date().toISOString() };
+    if (existing >= 0) c.sp2.mesures[existing] = mesure;
+    else { c.sp2.mesures.push(mesure); c.sp2.mesures.sort((a,b) => a.semaine - b.semaine); }
+    if (poids) { if (!c.poids) c.poids = []; c.poids.push({ val: poids, date: new Date().toISOString() }); updateTotalKg(); }
+    if (resultEl) resultEl.innerHTML = '<div class="alert alert-vert">✅ Mesures S' + semaine + ' enregistrées → visibles dans Suivi Physique</div>';
+  }
+  
+  saveData();
+  loadImportMesuresBaseline();
+  showToast('Mesures enregistrées pour ' + (c.prenom||'la cliente') + ' !');
+}
+
+function importSuiviMatin() {
+  const id = document.getElementById('import-suivi-client').value;
+  const text = (document.getElementById('suivi-import-text') || {value:''}).value;
+  const resultEl = document.getElementById('suivi-import-result');
+  if (!id) { if (resultEl) resultEl.innerHTML = '<div class="alert alert-rouge">Sélectionne une cliente</div>'; return; }
+  if (!text.trim()) { if (resultEl) resultEl.innerHTML = '<div class="alert alert-rouge">Colle le message de la cliente</div>'; return; }
+  
+  // Use existing analyserSuivi logic via AI
+  const c = DATA.clients.find(x => x.id === id);
+  if (!c) return;
+  if (!c.sp2) c.sp2 = { baseline:{}, mesures:[], quotidien:[] };
+  
+  const prompt = `Extrais les données suivantes du message WhatsApp de suivi matin ci-dessous.
+Réponds UNIQUEMENT en JSON sans markdown, avec ces clés exactes :
+{ "energie": 1-5, "sommeil": 1-5, "digestion": 1-5, "dinerOk": true/false, "marche": true/false, "marcheDuree": minutes_ou_null, "grignotage": true/false, "note": "texte libre ou null" }
+
+Message : ${text}`;
+
+  callAI(prompt).then(result => {
+    try {
+      const clean = result.replace(/```json|```/g, '').trim();
+      const data = JSON.parse(clean);
+      const today = new Date().toISOString().split('T')[0];
+      data.date = today;
+      if (!c.sp2.quotidien) c.sp2.quotidien = [];
+      const idx = c.sp2.quotidien.findIndex(q => q.date === today);
+      if (idx >= 0) c.sp2.quotidien[idx] = Object.assign({}, c.sp2.quotidien[idx], data);
+      else c.sp2.quotidien.push(data);
+      
+      // Also save to suiviBienetre for backward compat
+      if (!c.suiviBienetre) c.suiviBienetre = [];
+      c.suiviBienetre.push({ date: new Date().toISOString(), energie: data.energie, sommeil: data.sommeil, corps: data.digestion, diner: data.dinerOk ? 'Facile' : 'Difficile' });
+      
+      saveData();
+      if (resultEl) resultEl.innerHTML = '<div class="alert alert-vert">✅ Suivi matin enregistré pour ' + (c.prenom||'la cliente') + ' — données visibles dans Suivi Physique</div>';
+      showToast('Suivi matin importé !');
+    } catch(e) {
+      if (resultEl) resultEl.innerHTML = '<div class="alert alert-rouge">Erreur d\'analyse. Réessaie ou saisis manuellement dans Suivi Physique.</div>';
+    }
+  });
+}
+
+function importTemoignage() {
+  const id = document.getElementById('import-temo-client').value;
+  const text = (document.getElementById('import-temo-text') || {value:''}).value;
+  const poids = parseFloat(document.getElementById('import-temo-poids').value) || null;
+  const taille = parseFloat(document.getElementById('import-temo-taille').value) || null;
+  const photo = document.getElementById('import-temo-photo').value;
+  const resultEl = document.getElementById('import-temo-result');
+  
+  if (!id) { if (resultEl) resultEl.innerHTML = '<div class="alert alert-rouge">Sélectionne une cliente</div>'; return; }
+  if (!text.trim()) { if (resultEl) resultEl.innerHTML = '<div class="alert alert-rouge">Entre le témoignage</div>'; return; }
+  
+  const c = DATA.clients.find(x => x.id === id);
+  if (!c) return;
+  if (!c.temoignages) c.temoignages = [];
+  c.temoignages.push({ text: text.trim(), poidsPerdu: poids, taillePerdu: taille, photo, date: new Date().toISOString() });
+  c.statut = 'temoignage';
+  saveData();
+  if (resultEl) resultEl.innerHTML = '<div class="alert alert-vert">⭐ Témoignage enregistré pour ' + (c.prenom||'la cliente') + ' !</div>';
+  showToast('Témoignage enregistré !');
+}
+
+// ══════════════════════════════════════════════════
+// BIBLIOTHÈQUE — Analyse IA
+// ══════════════════════════════════════════════════
+
+function switchBiblioTab(tab, btn) {
+  document.querySelectorAll('#page-bibliotheque .result-tab').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.getElementById('biblio-tab-recettes').style.display = tab === 'recettes' ? 'block' : 'none';
+  document.getElementById('biblio-tab-analyse').style.display = tab === 'analyse' ? 'block' : 'none';
+}
+
+let _biblioLastResult = '';
+
+function biblioAnalyseIA() {
+  const menu = (document.getElementById('biblio-menu-input') || {value:''}).value.trim();
+  const type = (document.getElementById('biblio-analyse-type') || {value:'analyser'}).value;
+  const context = (document.getElementById('biblio-analyse-context') || {value:''}).value.trim();
+  const resultEl = document.getElementById('biblio-analyse-result');
+  const copyBtn = document.getElementById('biblio-copy-btn');
+  
+  if (!menu) {
+    if (resultEl) resultEl.innerHTML = '<div style="color:var(--rouge)">⚠️ Colle d\'abord un menu à analyser</div>';
+    return;
+  }
+  
+  if (resultEl) resultEl.innerHTML = '<div style="color:var(--muted);text-align:center;padding:40px 0"><div class="spin">🤖</div><br>Analyse en cours...</div>';
+  
+  const typePrompts = {
+    analyser: `Analyse ce menu selon les 5 piliers des Dîners Intelligents :
+PILIER 1 : 60% légumes / 40% protéines maigres. Zéro riz le soir.
+PILIER 2 : Structure de l'assiette compte autant que les ingrédients.
+PILIER 3 : Féculents max avant 18h30 uniquement.
+PILIER 4 : Rééducation progressive du goût.
+PILIER 5 : Zéro cube industriel. Bouillons et marinades naturels.
+
+Pour chaque pilier : ✅ respecté / ⚠️ partiellement / ❌ à corriger.
+Conclude avec une note globale /5 et 3 recommandations prioritaires.`,
+    ameliorer: `Améliore ce menu selon la méthode des Dîners Intelligents (dîner familial intelligent, ingrédients naturels, transformation physique sans régime). Propose une version améliorée complète avec les modifications concrètes à faire.`,
+    accompagnement: `Crée un plan d'accompagnement semaine par semaine pour ce menu sur 28 jours, structuré ainsi :
+- S1 : Introduction et adaptation (rééducation douce)
+- S2 : Fondation (habitudes ancrées)
+- S3 : Progression (ajout marche)
+- S4 : Optimisation (gainage + résultats visibles)
+Inclure les conseils coach pour chaque semaine.`,
+    substitutions: `Propose des substitutions avec ingrédients locaux disponibles en Côte d'Ivoire et en Afrique de l'Ouest pour chaque aliment de ce menu. Garde la valeur nutritive et l'esprit de la méthode. Précise le marché ou lieu d'achat local si possible.`,
+    variante: `Crée une variante complète de ce menu pour éviter la monotonie tout en respectant les 5 piliers des Dîners Intelligents. Les variantes doivent utiliser des ingrédients différents mais rester dans le même esprit nutritionnel.`,
+    integrer: `Adapte ce menu pour toute la famille (enfants et mari qui mangent normalement) en une seule préparation. Stratégie : même base de plat, modifications légères. Les enfants et le mari ne doivent pas sentir qu'ils font un régime.`
+  };
+  
+  const prompt = `Tu es expert en nutrition familiale africaine et méthode "Dîners Intelligents" de L'Architecte du Dîner.
+Méthode : transformer le corps de la famille en transformant uniquement le dîner. Slogan : "Je transforme ta famille en transformant le dîner."
+
+${typePrompts[type] || typePrompts.analyser}
+
+${context ? 'CONTEXTE CLIENTE : ' + context : ''}
+
+MENU À TRAITER :
+${menu}
+
+Réponds en français, de manière structurée et pratique.`;
+
+  callAI(prompt).then(result => {
+    if (resultEl) { resultEl.textContent = result; }
+    _biblioLastResult = result;
+    if (copyBtn) copyBtn.style.display = 'inline-flex';
+  });
+}
+
+function biblioCopyResult() {
+  if (_biblioLastResult) {
+    navigator.clipboard.writeText(_biblioLastResult).then(() => showToast('Résultat copié !'));
+  }
+}
+
+function biblioSaveAsRecette() {
+  if (!_biblioLastResult) return;
+  const nom = prompt('Nom de la recette à sauvegarder :');
+  if (!nom) return;
+  if (!DATA.recettes) DATA.recettes = [];
+  DATA.recettes.push({ id: 'r_' + Date.now(), nom, categorie: 'Protéines + Légumes', ingredients: '', preparation: _biblioLastResult, duree: '', createdAt: new Date().toISOString() });
+  saveData();
+  showToast('Recette sauvegardée dans la bibliothèque !');
+}
+
+function biblioSendToMenus() {
+  if (!_biblioLastResult) return;
+  if (!DATA.lastBiblioMenu) DATA.lastBiblioMenu = '';
+  DATA.lastBiblioMenu = _biblioLastResult;
+  saveData();
+  goPage('menus');
+  showToast('Menu envoyé vers la page Menus !');
+}
+
 const PAGE_TITLES = {
   dashboard: 'Dashboard',
   clients: 'Clients & Pipeline',
@@ -7095,7 +9414,7 @@ const PAGE_TITLES = {
   resultats: 'Résultats Clientes',
   finance: 'Finance',
   menus: 'Menus IA',
-  import: 'Import Fiche Adhérent',
+  import: 'Centre d\'Importation',
   photos: 'Analyse Photos',
   vente: 'Page de Vente',
   bibliotheque: 'Bibliothèque Dîners',
@@ -7105,12 +9424,16 @@ const PAGE_TITLES = {
   feuilleroute: 'Feuilles de Route',
   capcut: 'Assistant CapCut',
   conversion: 'Plan de Conversion 30 Jours',
+  suivipro: 'Suivi Pro Clientes',
+  'suivi-physique': 'Suivi Physique & Score',
   parametres: 'Paramètres'
 };
 
+// Patch sp2 populate on navigate
 const _origGoPage = goPage;
 goPage = function(id) {
   _origGoPage(id);
+  // suivi-physique handled via onPageLoad
   const titleEl = document.getElementById('topbar-title');
   if (titleEl && PAGE_TITLES[id]) titleEl.textContent = PAGE_TITLES[id];
 };
